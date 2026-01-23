@@ -1,29 +1,29 @@
-# SpaTalk <img src='https://github.com/ZJUFanLab/SpaTalk/blob/main/img/SpaTalk.png' align="right" height="139" />
+# SpaTalk <img src='https://github.com/ZJUFanLab/SpaTalk/blob/main/img/SpaTalk.png' align="right" height="139" alt="SpaTalk logo" />
 
 <!-- badges: start -->
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://zaoqu-liu.github.io/SpaTalk/)
 [![R-universe](https://zaoqu-liu.r-universe.dev/badges/SpaTalk)](https://zaoqu-liu.r-universe.dev/SpaTalk)
 [![R ≥ 4.0](https://img.shields.io/badge/R-%E2%89%A5%204.0-blue.svg)](https://cran.r-project.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![DOI](https://img.shields.io/badge/DOI-10.1038%2Fs41467--022--32111--8-green)](https://doi.org/10.1038/s41467-022-32111-8)
-[![Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.6809147.svg)](https://doi.org/10.5281/zenodo.6809147)
 <!-- badges: end -->
 
-## Knowledge-Graph-Based Cell-Cell Communication Inference for Spatially Resolved Transcriptomic Data
+## 📚 Documentation
 
-> **Note**: This repository is maintained by [Zaoqu Liu](https://github.com/Zaoqu-Liu). For the original version, please visit [ZJUFanLab/SpaTalk](https://github.com/ZJUFanLab/SpaTalk).
+**Full documentation**: [https://zaoqu-liu.github.io/SpaTalk/](https://zaoqu-liu.github.io/SpaTalk/)
 
 ## Overview
 
 **SpaTalk** is a computational framework for inferring spatially resolved cell-cell communications (CCIs) from spatial transcriptomics (ST) data. The method integrates graph network modeling and knowledge graph approaches to reconstruct ligand-receptor-target signaling networks between spatially proximal cells.
 
-### Key Methodological Features
+### Key Features
 
 - **Cell-type Deconvolution**: Non-negative linear model (NNLM) for decomposing spot-based ST data into single-cell resolution
 - **Spatial Mapping**: Integration of scRNA-seq reference data with spatial coordinates
 - **Graph-based CCI Inference**: Knowledge graph modeling of ligand-receptor-downstream pathway interactions
 - **Statistical Validation**: Permutation-based significance testing for identified communications
 
-### Supported Data Types
+### Supported Platforms
 
 | Platform | Resolution | Examples |
 |----------|-----------|----------|
@@ -79,7 +79,6 @@ obj <- createSpaTalk(
 obj <- dec_celltype(
   obj, 
   sc_data = sc_counts,       # scRNA-seq reference
-
   sc_celltype = cell_labels  # Cell type annotations
 )
 ```
@@ -125,23 +124,6 @@ SpaTalk incorporates curated biological knowledge from:
 | [Reactome](https://reactome.org/) | Pathway interactions | Human, Mouse |
 | [AnimalTFDB](http://bioinfo.life.hust.edu.cn/AnimalTFDB/) | Transcription factors | Human, Mouse |
 
-## Documentation
-
-- **Tutorial**: [Comprehensive vignette](https://raw.githack.com/multitalk/awesome-cell-cell-communication/main/method/tutorial.html)
-- **Wiki**: [Detailed documentation](https://github.com/ZJUFanLab/SpaTalk/wiki)
-- **API Reference**: [Function documentation](https://raw.githack.com/ZJUFanLab/SpaTalk/main/vignettes/SpaTalk.pdf)
-
-### Tutorials by Data Type
-
-- [Single-cell ST analysis](https://raw.githack.com/multitalk/awesome-cell-cell-communication/main/method/sc_tutorial.html)
-- [Spot-based ST analysis](https://raw.githack.com/multitalk/awesome-cell-cell-communication/main/method/spot_tutorial.html)
-
-## Advanced Features
-
-- **Custom databases**: [Use custom LR pairs](https://github.com/ZJUFanLab/SpaTalk/wiki/Use-customed-lrpairs) | [Use custom pathways](https://github.com/ZJUFanLab/SpaTalk/wiki/Use-customed-pathways)
-- **Alternative deconvolution**: [RCTD, Seurat, SPOTlight, stereoscope, cell2location](https://github.com/ZJUFanLab/SpaTalk/wiki/Use-other-deconvolution-methods)
-- **Direct inference**: [Skip deconvolution for single-cell ST](https://github.com/ZJUFanLab/SpaTalk/wiki/Directly-infer-cell-cell-communication-skiping-deconvolution)
-
 ## Citation
 
 If you use SpaTalk in your research, please cite:
@@ -160,14 +142,15 @@ If you use SpaTalk in your research, please cite:
 }
 ```
 
-## Maintainers
-
-- **Current maintainer**: [Zaoqu Liu](mailto:liuzaoqu@163.com) (GitHub: [@Zaoqu-Liu](https://github.com/Zaoqu-Liu))
-- **Original developer**: [Xin Shao](mailto:xin_shao@zju.edu.cn) (GitHub: [@ZJUFanLab](https://github.com/ZJUFanLab))
-
 ## License
 
-This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL-3.0 License.
+
+## Maintainer
+
+**Zaoqu Liu** (GitHub: [@Zaoqu-Liu](https://github.com/Zaoqu-Liu))
+
+*Original development by [ZJUFanLab](https://github.com/ZJUFanLab/SpaTalk)*
 
 ---
 
