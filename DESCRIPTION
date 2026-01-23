@@ -48,6 +48,7 @@ Imports:
     digest,
     Rcpp (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo
+Remotes: linxihui/NNLM
 Suggests: 
     rmarkdown,
     knitr,
