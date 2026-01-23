@@ -186,7 +186,6 @@ createSpaTalk <- function(st_data, st_meta, species, if_st_is_sc, spot_max_cell,
 #' @import Matrix progress methods Seurat foreach doParallel parallel iterators readr
 #' @importFrom crayon cyan green
 #' @importFrom stringr str_replace_all
-#' @importFrom NNLM nnlm
 #' @importFrom stats dist
 #' @export
 
@@ -278,6 +277,12 @@ dec_celltype <- function(
       cat(crayon::cyan("Performing Non-negative regression for each cell", "\n"))
     } else {
       cat(crayon::cyan("Performing Non-negative regression for each spot", "\n"))
+    }
+    # Check NNLM availability
+    if (!requireNamespace("NNLM", quietly = TRUE)) {
+      stop("Package 'NNLM' is required for method 1 (NNLM deconvolution).\n",
+           "Please install it from GitHub:\n",
+           "  devtools::install_github('linxihui/NNLM')", call. = FALSE)
     }
     # use hvg
     if (if_use_hvg) {
