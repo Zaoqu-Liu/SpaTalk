@@ -19,10 +19,12 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 8,
-  fig.height = 6,
+  fig.width = 7,
+  fig.height = 5,
   warning = FALSE,
-  message = FALSE
+  message = FALSE,
+  out.width = "100%",
+  dpi = 100
 )
 ```
 
@@ -37,9 +39,74 @@ Spatial transcriptomics technologies can be broadly categorized into two types:
 
 This vignette provides platform-specific guidance for using SpaTalk.
 
+## Single-Cell Resolution Platforms
+
+### STARmap Example (Built-in Data)
+
+STARmap provides single-cell resolution with targeted gene panels. Let's demonstrate with the built-in STARmap data:
+
+```{r starmap}
+library(SpaTalk)
+
+# Load built-in STARmap demo data
+load(system.file("extdata", "starmap_data.rda", package = "SpaTalk"))
+load(system.file("extdata", "starmap_meta.rda", package = "SpaTalk"))
+
+# Check data dimensions
+cat("Genes:", nrow(starmap_data), "\n")
+cat("Cells:", ncol(starmap_data), "\n")
+cat("Cell types:", length(unique(starmap_meta$celltype)), "\n")
+```
+
+```{r starmap_create}
+# Create SpaTalk object - NO deconvolution needed
+st_meta <- data.frame(
+  cell = starmap_meta$cell,
+  x = starmap_meta$x,
+  y = starmap_meta$y
+)
+
+obj <- createSpaTalk(
+  st_data = starmap_data,
+  st_meta = st_meta,
+  species = "Mouse",
+  if_st_is_sc = TRUE,       # Single-cell resolution
+  spot_max_cell = 1,        # One cell per "spot"
+  celltype = starmap_meta$celltype  # Direct annotation
+)
+
+obj
+```
+
+```{r starmap_viz, fig.cap="STARmap single-cell spatial distribution"}
+plot_st_celltype_all(obj, size = 1.2)
+```
+
+### Other Single-Cell Platforms
+
+For **MERFISH**, **Xenium**, **seqFISH+**, etc., use the same workflow:
+
+```{r sc_workflow, eval=FALSE}
+# Generic single-cell resolution workflow
+obj <- createSpaTalk(
+  st_data = your_counts,        # Gene x Cell matrix
+  st_meta = your_coords,        # data.frame with cell, x, y
+  species = "Human",            # or "Mouse"
+  if_st_is_sc = TRUE,           # Single-cell resolution
+  spot_max_cell = 1,
+  celltype = your_annotations   # Cell type labels
+)
+
+# No deconvolution needed - proceed directly to CCI
+data(lrpairs)
+data(pathways)
+obj <- find_lr_path(obj, lrpairs, pathways)
+obj <- dec_cci_all(obj)
+```
+
 ## Spot-Based Platforms
 
-### 10x Visium
+### 10x Visium Workflow
 
 Visium captures ~1-10 cells per 55μm diameter spot with whole-transcriptome coverage.
 
@@ -69,16 +136,16 @@ st_meta <- data.frame(
   y = coords$imagecol
 )
 
-# Create SpaTalk object
+# Create SpaTalk object (spot-based)
 obj <- createSpaTalk(
   st_data = st_data,
   st_meta = st_meta,
   species = "Human",
-  if_st_is_sc = FALSE,
-  spot_max_cell = 8  # Visium: ~1-10 cells/spot
+  if_st_is_sc = FALSE,      # Spot-based
+  spot_max_cell = 8         # Visium: ~1-10 cells/spot
 )
 
-# Deconvolution with scRNA-seq reference
+# Deconvolution with scRNA-seq reference (REQUIRED for spot-based)
 obj <- dec_celltype(
   object = obj,
   sc_data = sc_reference,
@@ -91,10 +158,7 @@ obj <- dec_celltype(
 Slide-seq uses 10μm beads, typically capturing 1-10 cells per bead.
 
 ```{r slideseq, eval=FALSE}
-# Load Slide-seq data
-# Typically stored as sparse matrix + coordinates
-
-# Create SpaTalk object
+# Slide-seq workflow
 obj <- createSpaTalk(
   st_data = slideseq_counts,
   st_meta = data.frame(
@@ -106,41 +170,24 @@ obj <- createSpaTalk(
   if_st_is_sc = FALSE,
   spot_max_cell = 5  # Slide-seq: smaller spots
 )
+
+# Deconvolution required
+obj <- dec_celltype(obj, sc_data, sc_celltype)
 ```
 
-### Spatial Transcriptomics (Original ST)
+## Workflow Comparison
 
-The original ST platform uses ~100μm spots.
+### Single-cell Workflow (STARmap, MERFISH, Xenium)
 
-```{r st_original, eval=FALSE}
-obj <- createSpaTalk(
-  st_data = st_counts,
-  st_meta = st_coords,
-  species = "Human",
-  if_st_is_sc = FALSE,
-  spot_max_cell = 20  # Larger spots
-)
-```
-
-## Single-Cell Resolution Platforms
-
-### STARmap
-
-STARmap provides single-cell resolution with targeted gene panels.
-
-```{r starmap}
+```{r workflow_sc}
+# Complete single-cell workflow demonstration
 library(SpaTalk)
 
-# Load built-in STARmap demo data
+# 1. Load data
 load(system.file("extdata", "starmap_data.rda", package = "SpaTalk"))
 load(system.file("extdata", "starmap_meta.rda", package = "SpaTalk"))
 
-# Check data dimensions
-cat("Genes:", nrow(starmap_data), "\n")
-cat("Cells:", ncol(starmap_data), "\n")
-cat("Cell types:", length(unique(starmap_meta$celltype)), "\n")
-
-# Create SpaTalk object - NO deconvolution needed
+# 2. Create object with cell types
 st_meta <- data.frame(
   cell = starmap_meta$cell,
   x = starmap_meta$x,
@@ -151,103 +198,36 @@ obj <- createSpaTalk(
   st_data = starmap_data,
   st_meta = st_meta,
   species = "Mouse",
-  if_st_is_sc = TRUE,       # Single-cell resolution
-  spot_max_cell = 1,        # One cell per "spot"
-  celltype = starmap_meta$celltype  # Direct annotation
-)
-
-obj
-```
-
-### MERFISH
-
-MERFISH images hundreds to thousands of genes at single-cell resolution.
-
-```{r merfish, eval=FALSE}
-# Load MERFISH data (example format)
-merfish_data <- readRDS("merfish_counts.rds")
-merfish_meta <- read.csv("merfish_metadata.csv")
-
-obj <- createSpaTalk(
-  st_data = merfish_data,
-  st_meta = data.frame(
-    cell = merfish_meta$cell_id,
-    x = merfish_meta$x_centroid,
-    y = merfish_meta$y_centroid
-  ),
-  species = "Mouse",
   if_st_is_sc = TRUE,
   spot_max_cell = 1,
-  celltype = merfish_meta$cell_type
+  celltype = starmap_meta$celltype
 )
+
+# 3. NO deconvolution needed
+
+# 4. Filter LR paths
+data(lrpairs)
+data(pathways)
+obj <- find_lr_path(obj, lrpairs, pathways, if_doParallel = FALSE)
+
+# 5. Infer CCIs
+obj <- dec_cci(obj, "eL6", "PVALB", if_doParallel = FALSE)
+
+cat("Single-cell workflow completed!\n")
+cat("LR pairs found:", nrow(obj@lrpair), "\n")
 ```
 
-### 10x Xenium
-
-Xenium provides single-cell resolution with ~300-500 gene panels.
-
-```{r xenium, eval=FALSE}
-# Load Xenium output
-xenium_cells <- read.csv("cells.csv.gz")
-xenium_matrix <- Read10X("cell_feature_matrix/")
-
-obj <- createSpaTalk(
-  st_data = xenium_matrix,
-  st_meta = data.frame(
-    cell = xenium_cells$cell_id,
-    x = xenium_cells$x_centroid,
-    y = xenium_cells$y_centroid
-  ),
-  species = "Human",
-  if_st_is_sc = TRUE,
-  spot_max_cell = 1,
-  celltype = xenium_cells$cluster  # From clustering
-)
-```
-
-### seqFISH+
-
-seqFISH+ images ~10,000 genes at single-cell resolution.
-
-```{r seqfish, eval=FALSE}
-obj <- createSpaTalk(
-  st_data = seqfish_counts,
-  st_meta = seqfish_coords,
-  species = "Mouse",
-  if_st_is_sc = TRUE,
-  spot_max_cell = 1,
-  celltype = seqfish_annotations
-)
-```
-
-## Workflow Comparison
-
-### Spot-based Workflow
+### Spot-based Workflow (Visium, Slide-seq)
 
 ```{r workflow_spot, eval=FALSE}
+# Spot-based workflow (requires scRNA-seq reference)
+
 # 1. Create object (spot-based)
 obj <- createSpaTalk(st_data, st_meta, "Human", 
                      if_st_is_sc = FALSE, spot_max_cell = 10)
 
 # 2. Deconvolution (REQUIRED)
 obj <- dec_celltype(obj, sc_data, sc_celltype)
-
-# 3. Filter LR paths
-obj <- find_lr_path(obj, lrpairs, pathways)
-
-# 4. Infer CCIs
-obj <- dec_cci_all(obj)
-```
-
-### Single-cell Workflow
-
-```{r workflow_sc, eval=FALSE}
-# 1. Create object with cell types (single-cell)
-obj <- createSpaTalk(st_data, st_meta, "Mouse",
-                     if_st_is_sc = TRUE, spot_max_cell = 1,
-                     celltype = annotations)
-
-# 2. NO deconvolution needed
 
 # 3. Filter LR paths
 obj <- find_lr_path(obj, lrpairs, pathways)

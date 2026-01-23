@@ -1,5 +1,5 @@
 ---
-title: "SpaTalk: Knowledge-Graph-Based Cell-Cell Communication Inference"
+title: "SpaTalk: Quick Start Guide"
 author: 
   - name: "Zaoqu Liu"
     email: "liuzaoqu@163.com"
@@ -13,7 +13,7 @@ output:
     toc: true
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{SpaTalk: Knowledge-Graph-Based Cell-Cell Communication Inference}
+  %\VignetteIndexEntry{SpaTalk: Quick Start Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,7 +25,9 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5,
   warning = FALSE,
-  message = FALSE
+  message = FALSE,
+  out.width = "100%",
+  dpi = 100
 )
 ```
 
@@ -55,9 +57,11 @@ install.packages("SpaTalk", repos = "https://zaoqu-liu.r-universe.dev")
 devtools::install_github("Zaoqu-Liu/SpaTalk")
 ```
 
-## Quick Start
+## Quick Start with STARmap Data
 
-### Load Package and Data
+This tutorial uses the built-in STARmap mouse visual cortex data.
+
+### Step 1: Load Package and Data
 
 ```{r load}
 library(SpaTalk)
@@ -72,10 +76,10 @@ data(pathways)
 
 cat("Expression matrix:", nrow(starmap_data), "genes x", ncol(starmap_data), "cells\n")
 cat("Metadata:", nrow(starmap_meta), "cells\n")
-cat("LR pairs:", nrow(lrpairs), "\n")
+cat("Cell types:", paste(unique(starmap_meta$celltype), collapse = ", "), "\n")
 ```
 
-### Create SpaTalk Object
+### Step 2: Create SpaTalk Object
 
 ```{r create}
 # Prepare spatial metadata
@@ -98,7 +102,13 @@ obj <- createSpaTalk(
 obj
 ```
 
-### Filter LR-Pathway Pairs
+### Step 3: Visualize Spatial Distribution
+
+```{r viz_celltype, fig.cap="Spatial distribution of all cell types"}
+plot_st_celltype_all(obj, size = 1.2)
+```
+
+### Step 4: Filter LR-Pathway Pairs
 
 ```{r filter}
 # Find LR pairs with downstream pathway targets
@@ -112,19 +122,58 @@ obj <- find_lr_path(
 cat("Filtered LR pairs:", nrow(obj@lr_path$lrpairs), "\n")
 ```
 
-### Infer Cell-Cell Communications
+### Step 5: Infer Cell-Cell Communications
 
-```{r cci, eval=FALSE}
+```{r cci}
 # Infer CCIs between specific cell types
 obj <- dec_cci(
   object = obj,
   celltype_sender = "eL6",
-  celltype_receiver = "PVALB"
+  celltype_receiver = "PVALB",
+  if_doParallel = FALSE
 )
 
-# Or infer all pairwise CCIs
-obj <- dec_cci_all(object = obj, if_doParallel = FALSE)
+# View results
+if(nrow(obj@lrpair) > 0) {
+  cat("Found", nrow(obj@lrpair), "significant LR pairs:\n")
+  print(obj@lrpair[, c("ligand", "receptor", "lr_co_ratio", "lr_co_ratio_pvalue", "score")])
+}
 ```
+
+### Step 6: Visualize Results
+
+#### Cell-Cell Distance Distribution
+
+```{r viz_dist, fig.cap="Distance distribution between eL6 and PVALB cells"}
+plot_ccdist(
+  object = obj,
+  celltype_sender = "eL6",
+  celltype_receiver = "PVALB"
+)
+```
+
+#### LR Pair Spatial Distribution
+
+```{r viz_lrpair, fig.cap="Spatial distribution of ligand-receptor interactions"}
+if(nrow(obj@lrpair) > 0) {
+  lr <- obj@lrpair[1, ]
+  plot_lrpair(
+    object = obj,
+    ligand = lr$ligand,
+    receptor = lr$receptor,
+    celltype_sender = "eL6",
+    celltype_receiver = "PVALB",
+    size = 1.2
+  )
+}
+```
+
+## Next Steps
+
+- See the **Algorithm** vignette for methodological details
+- See the **Visualization** vignette for all plotting options
+- See the **Advanced Usage** vignette for custom databases and parallel processing
+- See the **Platforms** vignette for platform-specific workflows
 
 ## Session Info
 

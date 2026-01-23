@@ -116,14 +116,87 @@ two types:</p>
 SpaTalk.</p>
 </div>
 <div class="section level2">
+<h2 id="single-cell-resolution-platforms">Single-Cell Resolution Platforms<a class="anchor" aria-label="anchor" href="#single-cell-resolution-platforms"></a>
+</h2>
+<div class="section level3">
+<h3 id="starmap-example-built-in-data">STARmap Example (Built-in Data)<a class="anchor" aria-label="anchor" href="#starmap-example-built-in-data"></a>
+</h3>
+<p>STARmap provides single-cell resolution with targeted gene panels.
+Let’s demonstrate with the built-in STARmap data:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zaoqu-liu.github.io/SpaTalk/">SpaTalk</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load built-in STARmap demo data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"starmap_data.rda"</span>, package <span class="op">=</span> <span class="st">"SpaTalk"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"starmap_meta.rda"</span>, package <span class="op">=</span> <span class="st">"SpaTalk"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check data dimensions</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Genes:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">starmap_data</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Genes: 996</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Cells:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">starmap_data</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Cells: 930</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Cell types:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">starmap_meta</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Cell types: 14</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create SpaTalk object - NO deconvolution needed</span></span>
+<span><span class="va">st_meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  cell <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">cell</span>,</span>
+<span>  x <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  y <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">y</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
+<span>  st_data <span class="op">=</span> <span class="va">starmap_data</span>,</span>
+<span>  st_meta <span class="op">=</span> <span class="va">st_meta</span>,</span>
+<span>  species <span class="op">=</span> <span class="st">"Mouse"</span>,</span>
+<span>  if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Single-cell resolution</span></span>
+<span>  spot_max_cell <span class="op">=</span> <span class="fl">1</span>,        <span class="co"># One cell per "spot"</span></span>
+<span>  celltype <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">celltype</span>  <span class="co"># Direct annotation</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">obj</span></span>
+<span><span class="co">#&gt; An object of class SpaTalk </span></span>
+<span><span class="co">#&gt; 996 genes across 930 single-cells (0 lrpair)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_st_celltype_all.html">plot_st_celltype_all</a></span><span class="op">(</span><span class="va">obj</span>, size <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="platforms_files/figure-html/starmap_viz-1.png" alt="STARmap single-cell spatial distribution" width="100%"><p class="caption">
+STARmap single-cell spatial distribution
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="other-single-cell-platforms">Other Single-Cell Platforms<a class="anchor" aria-label="anchor" href="#other-single-cell-platforms"></a>
+</h3>
+<p>For <strong>MERFISH</strong>, <strong>Xenium</strong>,
+<strong>seqFISH+</strong>, etc., use the same workflow:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Generic single-cell resolution workflow</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
+<span>  st_data <span class="op">=</span> <span class="va">your_counts</span>,        <span class="co"># Gene x Cell matrix</span></span>
+<span>  st_meta <span class="op">=</span> <span class="va">your_coords</span>,        <span class="co"># data.frame with cell, x, y</span></span>
+<span>  species <span class="op">=</span> <span class="st">"Human"</span>,            <span class="co"># or "Mouse"</span></span>
+<span>  if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>,           <span class="co"># Single-cell resolution</span></span>
+<span>  spot_max_cell <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  celltype <span class="op">=</span> <span class="va">your_annotations</span>   <span class="co"># Cell type labels</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># No deconvolution needed - proceed directly to CCI</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">lrpairs</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pathways</span><span class="op">)</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_lr_path.html">find_lr_path</a></span><span class="op">(</span><span class="va">obj</span>, <span class="va">lrpairs</span>, <span class="va">pathways</span><span class="op">)</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dec_cci_all.html">dec_cci_all</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
 <h2 id="spot-based-platforms">Spot-Based Platforms<a class="anchor" aria-label="anchor" href="#spot-based-platforms"></a>
 </h2>
 <div class="section level3">
-<h3 id="x-visium">10x Visium<a class="anchor" aria-label="anchor" href="#x-visium"></a>
+<h3 id="x-visium-workflow">10x Visium Workflow<a class="anchor" aria-label="anchor" href="#x-visium-workflow"></a>
 </h3>
 <p>Visium captures ~1-10 cells per 55μm diameter spot with
 whole-transcriptome coverage.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zaoqu-liu.github.io/SpaTalk/">SpaTalk</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span></span>
@@ -149,16 +222,16 @@ whole-transcriptome coverage.</p>
 <span>  y <span class="op">=</span> <span class="va">coords</span><span class="op">$</span><span class="va">imagecol</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create SpaTalk object</span></span>
+<span><span class="co"># Create SpaTalk object (spot-based)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
 <span>  st_data <span class="op">=</span> <span class="va">st_data</span>,</span>
 <span>  st_meta <span class="op">=</span> <span class="va">st_meta</span>,</span>
 <span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span>
-<span>  if_st_is_sc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  spot_max_cell <span class="op">=</span> <span class="fl">8</span>  <span class="co"># Visium: ~1-10 cells/spot</span></span>
+<span>  if_st_is_sc <span class="op">=</span> <span class="cn">FALSE</span>,      <span class="co"># Spot-based</span></span>
+<span>  spot_max_cell <span class="op">=</span> <span class="fl">8</span>         <span class="co"># Visium: ~1-10 cells/spot</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Deconvolution with scRNA-seq reference</span></span>
+<span><span class="co"># Deconvolution with scRNA-seq reference (REQUIRED for spot-based)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dec_celltype.html">dec_celltype</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">obj</span>,</span>
 <span>  sc_data <span class="op">=</span> <span class="va">sc_reference</span>,</span>
@@ -170,11 +243,8 @@ whole-transcriptome coverage.</p>
 </h3>
 <p>Slide-seq uses 10μm beads, typically capturing 1-10 cells per
 bead.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load Slide-seq data</span></span>
-<span><span class="co"># Typically stored as sparse matrix + coordinates</span></span>
-<span></span>
-<span><span class="co"># Create SpaTalk object</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Slide-seq workflow</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
 <span>  st_data <span class="op">=</span> <span class="va">slideseq_counts</span>,</span>
 <span>  st_meta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -185,46 +255,27 @@ bead.</p>
 <span>  species <span class="op">=</span> <span class="st">"Mouse"</span>,</span>
 <span>  if_st_is_sc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  spot_max_cell <span class="op">=</span> <span class="fl">5</span>  <span class="co"># Slide-seq: smaller spots</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="spatial-transcriptomics-original-st">Spatial Transcriptomics (Original ST)<a class="anchor" aria-label="anchor" href="#spatial-transcriptomics-original-st"></a>
-</h3>
-<p>The original ST platform uses ~100μm spots.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
-<span>  st_data <span class="op">=</span> <span class="va">st_counts</span>,</span>
-<span>  st_meta <span class="op">=</span> <span class="va">st_coords</span>,</span>
-<span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span>
-<span>  if_st_is_sc <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  spot_max_cell <span class="op">=</span> <span class="fl">20</span>  <span class="co"># Larger spots</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Deconvolution required</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dec_celltype.html">dec_celltype</a></span><span class="op">(</span><span class="va">obj</span>, <span class="va">sc_data</span>, <span class="va">sc_celltype</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="single-cell-resolution-platforms">Single-Cell Resolution Platforms<a class="anchor" aria-label="anchor" href="#single-cell-resolution-platforms"></a>
+<h2 id="workflow-comparison">Workflow Comparison<a class="anchor" aria-label="anchor" href="#workflow-comparison"></a>
 </h2>
 <div class="section level3">
-<h3 id="starmap">STARmap<a class="anchor" aria-label="anchor" href="#starmap"></a>
+<h3 id="single-cell-workflow-starmap-merfish-xenium">Single-cell Workflow (STARmap, MERFISH, Xenium)<a class="anchor" aria-label="anchor" href="#single-cell-workflow-starmap-merfish-xenium"></a>
 </h3>
-<p>STARmap provides single-cell resolution with targeted gene
-panels.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zaoqu-liu.github.io/SpaTalk/">SpaTalk</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Complete single-cell workflow demonstration</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://zaoqu-liu.github.io/SpaTalk/">SpaTalk</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Load built-in STARmap demo data</span></span>
+<span><span class="co"># 1. Load data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"starmap_data.rda"</span>, package <span class="op">=</span> <span class="st">"SpaTalk"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"starmap_meta.rda"</span>, package <span class="op">=</span> <span class="st">"SpaTalk"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Check data dimensions</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Genes:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">starmap_data</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Genes: 996</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Cells:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">starmap_data</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Cells: 930</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Cell types:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">starmap_meta</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Cell types: 14</span></span>
-<span></span>
-<span><span class="co"># Create SpaTalk object - NO deconvolution needed</span></span>
+<span><span class="co"># 2. Create object with cell types</span></span>
 <span><span class="va">st_meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  cell <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">cell</span>,</span>
 <span>  x <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">x</span>,</span>
@@ -235,105 +286,44 @@ panels.</p>
 <span>  st_data <span class="op">=</span> <span class="va">starmap_data</span>,</span>
 <span>  st_meta <span class="op">=</span> <span class="va">st_meta</span>,</span>
 <span>  species <span class="op">=</span> <span class="st">"Mouse"</span>,</span>
-<span>  if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Single-cell resolution</span></span>
-<span>  spot_max_cell <span class="op">=</span> <span class="fl">1</span>,        <span class="co"># One cell per "spot"</span></span>
-<span>  celltype <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">celltype</span>  <span class="co"># Direct annotation</span></span>
+<span>  if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  spot_max_cell <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  celltype <span class="op">=</span> <span class="va">starmap_meta</span><span class="op">$</span><span class="va">celltype</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">obj</span></span>
-<span><span class="co">#&gt; An object of class SpaTalk </span></span>
-<span><span class="co">#&gt; 996 genes across 930 single-cells (0 lrpair)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="merfish">MERFISH<a class="anchor" aria-label="anchor" href="#merfish"></a>
-</h3>
-<p>MERFISH images hundreds to thousands of genes at single-cell
-resolution.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load MERFISH data (example format)</span></span>
-<span><span class="va">merfish_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"merfish_counts.rds"</span><span class="op">)</span></span>
-<span><span class="va">merfish_meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"merfish_metadata.csv"</span><span class="op">)</span></span>
+<span><span class="co"># 3. NO deconvolution needed</span></span>
 <span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
-<span>  st_data <span class="op">=</span> <span class="va">merfish_data</span>,</span>
-<span>  st_meta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    cell <span class="op">=</span> <span class="va">merfish_meta</span><span class="op">$</span><span class="va">cell_id</span>,</span>
-<span>    x <span class="op">=</span> <span class="va">merfish_meta</span><span class="op">$</span><span class="va">x_centroid</span>,</span>
-<span>    y <span class="op">=</span> <span class="va">merfish_meta</span><span class="op">$</span><span class="va">y_centroid</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  species <span class="op">=</span> <span class="st">"Mouse"</span>,</span>
-<span>  if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  spot_max_cell <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  celltype <span class="op">=</span> <span class="va">merfish_meta</span><span class="op">$</span><span class="va">cell_type</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="x-xenium">10x Xenium<a class="anchor" aria-label="anchor" href="#x-xenium"></a>
-</h3>
-<p>Xenium provides single-cell resolution with ~300-500 gene panels.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load Xenium output</span></span>
-<span><span class="va">xenium_cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"cells.csv.gz"</span><span class="op">)</span></span>
-<span><span class="va">xenium_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/Read10X.html" class="external-link">Read10X</a></span><span class="op">(</span><span class="st">"cell_feature_matrix/"</span><span class="op">)</span></span>
+<span><span class="co"># 4. Filter LR paths</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">lrpairs</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pathways</span><span class="op">)</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_lr_path.html">find_lr_path</a></span><span class="op">(</span><span class="va">obj</span>, <span class="va">lrpairs</span>, <span class="va">pathways</span>, if_doParallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">Checking input data </span></span></span>
+<span><span class="co"><span style="color: #00BBBB;">#&gt; Begin to filter lrpairs and pathways </span></span></span>
+<span><span class="co"><span style="color: #00BBBB;">#&gt; </span><span style="color: #00BB00;">***Done*** </span></span></span>
+<span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
 <span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
-<span>  st_data <span class="op">=</span> <span class="va">xenium_matrix</span>,</span>
-<span>  st_meta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    cell <span class="op">=</span> <span class="va">xenium_cells</span><span class="op">$</span><span class="va">cell_id</span>,</span>
-<span>    x <span class="op">=</span> <span class="va">xenium_cells</span><span class="op">$</span><span class="va">x_centroid</span>,</span>
-<span>    y <span class="op">=</span> <span class="va">xenium_cells</span><span class="op">$</span><span class="va">y_centroid</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span>
-<span>  if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  spot_max_cell <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  celltype <span class="op">=</span> <span class="va">xenium_cells</span><span class="op">$</span><span class="va">cluster</span>  <span class="co"># From clustering</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># 5. Infer CCIs</span></span>
+<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dec_cci.html">dec_cci</a></span><span class="op">(</span><span class="va">obj</span>, <span class="st">"eL6"</span>, <span class="st">"PVALB"</span>, if_doParallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">Begin to find LR pairs </span></span></span>
+<span><span class="co"><span style="color: #00BBBB;">#&gt; </span></span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Single-cell workflow completed!\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Single-cell workflow completed!</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"LR pairs found:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">obj</span><span class="op">@</span><span class="va">lrpair</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; LR pairs found: 1</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="seqfish">seqFISH+<a class="anchor" aria-label="anchor" href="#seqfish"></a>
-</h3>
-<p>seqFISH+ images ~10,000 genes at single-cell resolution.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span></span>
-<span>  st_data <span class="op">=</span> <span class="va">seqfish_counts</span>,</span>
-<span>  st_meta <span class="op">=</span> <span class="va">seqfish_coords</span>,</span>
-<span>  species <span class="op">=</span> <span class="st">"Mouse"</span>,</span>
-<span>  if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  spot_max_cell <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  celltype <span class="op">=</span> <span class="va">seqfish_annotations</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="workflow-comparison">Workflow Comparison<a class="anchor" aria-label="anchor" href="#workflow-comparison"></a>
-</h2>
-<div class="section level3">
-<h3 id="spot-based-workflow">Spot-based Workflow<a class="anchor" aria-label="anchor" href="#spot-based-workflow"></a>
+<h3 id="spot-based-workflow-visium-slide-seq">Spot-based Workflow (Visium, Slide-seq)<a class="anchor" aria-label="anchor" href="#spot-based-workflow-visium-slide-seq"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 1. Create object (spot-based)</span></span>
+<code class="sourceCode R"><span><span class="co"># Spot-based workflow (requires scRNA-seq reference)</span></span>
+<span></span>
+<span><span class="co"># 1. Create object (spot-based)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span><span class="va">st_data</span>, <span class="va">st_meta</span>, <span class="st">"Human"</span>, </span>
 <span>                     if_st_is_sc <span class="op">=</span> <span class="cn">FALSE</span>, spot_max_cell <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2. Deconvolution (REQUIRED)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dec_celltype.html">dec_celltype</a></span><span class="op">(</span><span class="va">obj</span>, <span class="va">sc_data</span>, <span class="va">sc_celltype</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 3. Filter LR paths</span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_lr_path.html">find_lr_path</a></span><span class="op">(</span><span class="va">obj</span>, <span class="va">lrpairs</span>, <span class="va">pathways</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 4. Infer CCIs</span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dec_cci_all.html">dec_cci_all</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="single-cell-workflow">Single-cell Workflow<a class="anchor" aria-label="anchor" href="#single-cell-workflow"></a>
-</h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 1. Create object with cell types (single-cell)</span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createSpaTalk.html">createSpaTalk</a></span><span class="op">(</span><span class="va">st_data</span>, <span class="va">st_meta</span>, <span class="st">"Mouse"</span>,</span>
-<span>                     if_st_is_sc <span class="op">=</span> <span class="cn">TRUE</span>, spot_max_cell <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                     celltype <span class="op">=</span> <span class="va">annotations</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 2. NO deconvolution needed</span></span>
 <span></span>
 <span><span class="co"># 3. Filter LR paths</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_lr_path.html">find_lr_path</a></span><span class="op">(</span><span class="va">obj</span>, <span class="va">lrpairs</span>, <span class="va">pathways</span><span class="op">)</span></span>
@@ -445,7 +435,7 @@ methods</li>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.4.0 (2024-04-24)</span></span>
 <span><span class="co">#&gt; Platform: aarch64-apple-darwin20</span></span>
@@ -485,38 +475,38 @@ methods</li>
 <span><span class="co">#&gt;  [37] future_1.69.0          shiny_1.12.1           digest_0.6.39         </span></span>
 <span><span class="co">#&gt;  [40] patchwork_1.3.2        Seurat_4.4.0           tensor_1.5.1          </span></span>
 <span><span class="co">#&gt;  [43] irlba_2.3.5.1          textshaping_1.0.4      ggpubr_0.6.2          </span></span>
-<span><span class="co">#&gt;  [46] progressr_0.18.0       spatstat.sparse_3.1-0  httr_1.4.7            </span></span>
-<span><span class="co">#&gt;  [49] polyclip_1.10-7        abind_1.4-8            compiler_4.4.0        </span></span>
-<span><span class="co">#&gt;  [52] withr_3.0.2            backports_1.5.0        S7_0.2.1              </span></span>
-<span><span class="co">#&gt;  [55] carData_3.0-5          ggforce_0.5.0          ggsignif_0.6.4        </span></span>
-<span><span class="co">#&gt;  [58] MASS_7.3-65            rappdirs_0.3.4         tools_4.4.0           </span></span>
-<span><span class="co">#&gt;  [61] lmtest_0.9-40          otel_0.2.0             scatterpie_0.2.6      </span></span>
-<span><span class="co">#&gt;  [64] httpuv_1.6.16          future.apply_1.20.1    goftest_1.2-3         </span></span>
-<span><span class="co">#&gt;  [67] glue_1.8.0             nlme_3.1-168           promises_1.5.0        </span></span>
-<span><span class="co">#&gt;  [70] grid_4.4.0             Rtsne_0.17             cluster_2.1.8.1       </span></span>
-<span><span class="co">#&gt;  [73] reshape2_1.4.5         generics_0.1.4         gtable_0.3.6          </span></span>
-<span><span class="co">#&gt;  [76] spatstat.data_3.1-9    tzdb_0.5.0             tidyr_1.3.2           </span></span>
-<span><span class="co">#&gt;  [79] data.table_1.18.0      hms_1.1.4              car_3.1-3             </span></span>
-<span><span class="co">#&gt;  [82] sp_2.2-0               spatstat.geom_3.6-1    RcppAnnoy_0.0.23      </span></span>
-<span><span class="co">#&gt;  [85] ggrepel_0.9.6          RANN_2.6.2             pillar_1.11.1         </span></span>
-<span><span class="co">#&gt;  [88] stringr_1.6.0          yulab.utils_0.2.3      ggExtra_0.11.0        </span></span>
-<span><span class="co">#&gt;  [91] later_1.4.5            splines_4.4.0          tweenr_2.0.3          </span></span>
-<span><span class="co">#&gt;  [94] dplyr_1.1.4            lattice_0.22-7         survival_3.8-3        </span></span>
-<span><span class="co">#&gt;  [97] deldir_2.0-4           tidyselect_1.2.1       miniUI_0.1.2          </span></span>
-<span><span class="co">#&gt; [100] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         </span></span>
-<span><span class="co">#&gt; [103] scattermore_1.2        xfun_0.56              matrixStats_1.5.0     </span></span>
-<span><span class="co">#&gt; [106] pheatmap_1.0.13        stringi_1.8.7          ggfun_0.2.0           </span></span>
-<span><span class="co">#&gt; [109] lazyeval_0.2.2         yaml_2.3.12            evaluate_1.0.5        </span></span>
-<span><span class="co">#&gt; [112] codetools_0.2-20       tibble_3.3.1           cli_3.6.5             </span></span>
-<span><span class="co">#&gt; [115] uwot_0.2.4             xtable_1.8-4           reticulate_1.44.1     </span></span>
-<span><span class="co">#&gt; [118] systemfonts_1.3.1      jquerylib_0.1.4        dichromat_2.0-0.1     </span></span>
-<span><span class="co">#&gt; [121] Rcpp_1.1.1             globals_0.18.0         spatstat.random_3.4-3 </span></span>
-<span><span class="co">#&gt; [124] png_0.1-8              spatstat.univar_3.1-6  readr_2.1.6           </span></span>
-<span><span class="co">#&gt; [127] pkgdown_2.1.3          NNLM_0.4.4             prettyunits_1.2.0     </span></span>
-<span><span class="co">#&gt; [130] listenv_0.10.0         viridisLite_0.4.2      scales_1.4.0          </span></span>
-<span><span class="co">#&gt; [133] ggridges_0.5.7         SeuratObject_4.1.4     leiden_0.4.3.1        </span></span>
-<span><span class="co">#&gt; [136] purrr_1.2.1            crayon_1.5.3           rlang_1.1.7           </span></span>
-<span><span class="co">#&gt; [139] cowplot_1.2.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [46] labeling_0.4.3         progressr_0.18.0       spatstat.sparse_3.1-0 </span></span>
+<span><span class="co">#&gt;  [49] httr_1.4.7             polyclip_1.10-7        abind_1.4-8           </span></span>
+<span><span class="co">#&gt;  [52] compiler_4.4.0         withr_3.0.2            backports_1.5.0       </span></span>
+<span><span class="co">#&gt;  [55] S7_0.2.1               carData_3.0-5          ggforce_0.5.0         </span></span>
+<span><span class="co">#&gt;  [58] ggsignif_0.6.4         MASS_7.3-65            rappdirs_0.3.4        </span></span>
+<span><span class="co">#&gt;  [61] ggsci_4.2.0            tools_4.4.0            lmtest_0.9-40         </span></span>
+<span><span class="co">#&gt;  [64] otel_0.2.0             scatterpie_0.2.6       httpuv_1.6.16         </span></span>
+<span><span class="co">#&gt;  [67] future.apply_1.20.1    goftest_1.2-3          glue_1.8.0            </span></span>
+<span><span class="co">#&gt;  [70] nlme_3.1-168           promises_1.5.0         grid_4.4.0            </span></span>
+<span><span class="co">#&gt;  [73] Rtsne_0.17             cluster_2.1.8.1        reshape2_1.4.5        </span></span>
+<span><span class="co">#&gt;  [76] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-9   </span></span>
+<span><span class="co">#&gt;  [79] tzdb_0.5.0             tidyr_1.3.2            data.table_1.18.0     </span></span>
+<span><span class="co">#&gt;  [82] hms_1.1.4              car_3.1-3              sp_2.2-0              </span></span>
+<span><span class="co">#&gt;  [85] spatstat.geom_3.6-1    RcppAnnoy_0.0.23       ggrepel_0.9.6         </span></span>
+<span><span class="co">#&gt;  [88] RANN_2.6.2             pillar_1.11.1          stringr_1.6.0         </span></span>
+<span><span class="co">#&gt;  [91] yulab.utils_0.2.3      ggExtra_0.11.0         later_1.4.5           </span></span>
+<span><span class="co">#&gt;  [94] splines_4.4.0          tweenr_2.0.3           dplyr_1.1.4           </span></span>
+<span><span class="co">#&gt;  [97] lattice_0.22-7         survival_3.8-3         deldir_2.0-4          </span></span>
+<span><span class="co">#&gt; [100] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         </span></span>
+<span><span class="co">#&gt; [103] knitr_1.51             gridExtra_2.3          scattermore_1.2       </span></span>
+<span><span class="co">#&gt; [106] xfun_0.56              matrixStats_1.5.0      pheatmap_1.0.13       </span></span>
+<span><span class="co">#&gt; [109] stringi_1.8.7          ggfun_0.2.0            lazyeval_0.2.2        </span></span>
+<span><span class="co">#&gt; [112] yaml_2.3.12            evaluate_1.0.5         codetools_0.2-20      </span></span>
+<span><span class="co">#&gt; [115] tibble_3.3.1           cli_3.6.5              uwot_0.2.4            </span></span>
+<span><span class="co">#&gt; [118] xtable_1.8-4           reticulate_1.44.1      systemfonts_1.3.1     </span></span>
+<span><span class="co">#&gt; [121] jquerylib_0.1.4        dichromat_2.0-0.1      Rcpp_1.1.1            </span></span>
+<span><span class="co">#&gt; [124] globals_0.18.0         spatstat.random_3.4-3  png_0.1-8             </span></span>
+<span><span class="co">#&gt; [127] spatstat.univar_3.1-6  readr_2.1.6            pkgdown_2.1.3         </span></span>
+<span><span class="co">#&gt; [130] NNLM_0.4.4             prettyunits_1.2.0      listenv_0.10.0        </span></span>
+<span><span class="co">#&gt; [133] viridisLite_0.4.2      scales_1.4.0           ggridges_0.5.7        </span></span>
+<span><span class="co">#&gt; [136] SeuratObject_4.1.4     leiden_0.4.3.1         purrr_1.2.1           </span></span>
+<span><span class="co">#&gt; [139] crayon_1.5.3           rlang_1.1.7            cowplot_1.2.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
