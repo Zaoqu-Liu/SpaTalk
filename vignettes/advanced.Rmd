@@ -1,0 +1,358 @@
+---
+title: "SpaTalk Advanced Usage"
+author: 
+  - name: "Zaoqu Liu"
+    email: "liuzaoqu@163.com"
+    affiliation: "Maintainer"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{SpaTalk Advanced Usage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Introduction
+
+This vignette covers advanced usage scenarios for SpaTalk, including:
+
+- Custom ligand-receptor databases
+- Alternative deconvolution methods
+- Parallel processing optimization
+- Working with different ST platforms
+- Troubleshooting common issues
+
+## Custom Databases
+
+### Custom Ligand-Receptor Pairs
+
+You can use your own curated LR pairs instead of the built-in CellTalkDB:
+
+```{r custom_lr, eval=FALSE}
+# Custom LR pairs must have these columns:
+# - ligand: ligand gene symbol
+# - receptor: receptor gene symbol  
+# - species: "Human" or "Mouse"
+
+custom_lrpairs <- data.frame(
+  ligand = c("CXCL12", "CCL2", "VEGFA"),
+  receptor = c("CXCR4", "CCR2", "KDR"),
+  species = "Human"
+)
+
+# Use in find_lr_path
+obj <- find_lr_path(obj, lrpairs = custom_lrpairs, pathways = pathways)
+```
+
+### Custom Pathway Database
+
+```{r custom_pathway, eval=FALSE}
+# Custom pathways must have:
+# - src: source gene
+# - dest: destination gene (downstream)
+# - type: interaction type (optional)
+
+custom_pathways <- data.frame(
+  src = c("CXCR4", "CXCR4", "STAT3"),
+  dest = c("STAT3", "AKT1", "MYC"),
+  type = c("activation", "activation", "transcription")
+)
+
+obj <- find_lr_path(obj, lrpairs = lrpairs, pathways = custom_pathways)
+```
+
+## Alternative Deconvolution Methods
+
+SpaTalk supports multiple deconvolution backends:
+
+### Method 1: Built-in NNLM (Default)
+
+```{r nnlm, eval=FALSE}
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_data,
+  sc_celltype = sc_celltype,
+  method = 1  # NNLM
+)
+```
+
+### Method 2: RCTD (spacexr)
+
+```{r rctd, eval=FALSE}
+# Requires: install.packages("spacexr")
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_data,
+  sc_celltype = sc_celltype,
+  method = 2  # RCTD
+)
+```
+
+### Method 3: Seurat Integration
+
+```{r seurat, eval=FALSE}
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_data,
+  sc_celltype = sc_celltype,
+  method = 3  # Seurat
+)
+```
+
+### Method 4: SPOTlight
+
+```{r spotlight, eval=FALSE}
+# Requires: BiocManager::install("SPOTlight")
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_data,
+  sc_celltype = sc_celltype,
+  method = 4  # SPOTlight
+)
+```
+
+### Method 5: deconvSeq
+
+```{r deconvseq, eval=FALSE}
+# Requires: devtools::install_github("reneshbedre/deconvSeq")
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_data,
+  sc_celltype = sc_celltype,
+  method = 5  # deconvSeq
+)
+```
+
+### Method 6: stereoscope (Python)
+
+```{r stereoscope, eval=FALSE}
+# Requires: conda environment with stereoscope
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_data,
+  sc_celltype = sc_celltype,
+  method = 6,  # stereoscope
+  python_path = "/path/to/conda/envs/stereoscope/bin/python"
+)
+```
+
+### Method 7: cell2location (Python)
+
+```{r cell2location, eval=FALSE}
+# Requires: conda environment with cell2location
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_data,
+  sc_celltype = sc_celltype,
+  method = 7,  # cell2location
+  python_path = "/path/to/conda/envs/cell2location/bin/python"
+)
+```
+
+## Parallel Processing
+
+### Enabling Parallel Processing
+
+SpaTalk leverages `doParallel` for multi-core computation:
+
+```{r parallel, eval=FALSE}
+library(doParallel)
+
+# Detect available cores
+n_cores <- parallel::detectCores() - 1
+cat("Using", n_cores, "cores\n")
+
+# Register parallel backend
+registerDoParallel(cores = n_cores)
+
+# Run with parallel enabled
+obj <- dec_cci_all(
+  object = obj,
+  if_doParallel = TRUE
+)
+
+# Clean up
+stopImplicitCluster()
+```
+
+### Memory Optimization
+
+For large datasets, consider:
+
+```{r memory, eval=FALSE}
+# Process cell types in batches
+celltypes <- unique(obj@meta$rawmeta$celltype)
+batch_size <- 5
+
+for(i in seq(1, length(celltypes), batch_size)) {
+  batch <- celltypes[i:min(i + batch_size - 1, length(celltypes))]
+  
+  for(ct_sender in batch) {
+    for(ct_receiver in batch) {
+      obj <- dec_cci(obj, ct_sender, ct_receiver)
+    }
+  }
+  
+  gc()  # Force garbage collection
+}
+```
+
+## Platform-Specific Workflows
+
+### 10x Visium
+
+```{r visium, eval=FALSE}
+# Load Visium data (via Seurat)
+library(Seurat)
+visium <- Load10X_Spatial("/path/to/visium/")
+
+# Extract data for SpaTalk
+st_data <- GetAssayData(visium, slot = "counts")
+st_meta <- data.frame(
+  spot = colnames(visium),
+  x = visium@images$slice1@coordinates$col,
+  y = visium@images$slice1@coordinates$row
+)
+
+# Create SpaTalk object (spot-based)
+obj <- createSpaTalk(
+  st_data = st_data,
+  st_meta = st_meta,
+  species = "Human",
+  if_st_is_sc = FALSE,
+  spot_max_cell = 10  # Expected cells per spot
+)
+```
+
+### Slide-seq
+
+```{r slideseq, eval=FALSE}
+# Slide-seq typically has ~10 cells per bead
+obj <- createSpaTalk(
+  st_data = slideseq_counts,
+  st_meta = slideseq_coords,
+  species = "Mouse",
+  if_st_is_sc = FALSE,
+  spot_max_cell = 10
+)
+```
+
+### STARmap / MERFISH (Single-cell resolution)
+
+```{r starmap, eval=FALSE}
+# Single-cell resolution - no deconvolution needed
+obj <- createSpaTalk(
+  st_data = starmap_counts,
+  st_meta = starmap_coords,
+  species = "Mouse",
+  if_st_is_sc = TRUE,
+  spot_max_cell = 1,
+  celltype = cell_annotations  # Pre-annotated cell types
+)
+```
+
+## Extracting Results
+
+### LR Pair Results
+
+```{r extract_lr, eval=FALSE}
+# Get significant LR pairs
+lr_results <- obj@lrpair
+sig_pairs <- lr_results[lr_results$lr_co_ratio_pvalue < 0.05, ]
+
+# Export to CSV
+write.csv(sig_pairs, "significant_lr_pairs.csv", row.names = FALSE)
+```
+### Downstream TF Scores
+
+```{r extract_tf, eval=FALSE}
+# Get TF activity scores
+tf_results <- obj@tf
+
+# Filter by score threshold
+active_tfs <- tf_results[tf_results$score > 0.1, ]
+```
+
+### Full CCI Network
+
+```{r extract_network, eval=FALSE}
+# Combine LR and TF results into network
+network <- merge(
+  obj@lrpair,
+  obj@tf,
+  by = c("celltype_sender", "celltype_receiver")
+)
+
+# Export for Cytoscape
+write.csv(network, "cci_network.csv", row.names = FALSE)
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue: "Gene not found in ST data"**
+```{r gene_not_found, eval=FALSE}
+# Check gene overlap
+st_genes <- rownames(obj@data$rawdata)
+lr_genes <- unique(c(lrpairs$ligand, lrpairs$receptor))
+overlap <- intersect(st_genes, lr_genes)
+cat("Overlapping genes:", length(overlap), "\n")
+```
+
+**Issue: Memory errors with large datasets**
+```{r memory_error, eval=FALSE}
+# Reduce data size
+obj <- createSpaTalk(
+  st_data = st_data[, sample(ncol(st_data), 5000)],  # Subsample spots
+  ...
+)
+```
+
+**Issue: No significant LR pairs found**
+```{r no_sig, eval=FALSE}
+# Check expression thresholds
+# Lower the expression cutoff
+obj <- find_lr_path(
+  obj, lrpairs, pathways,
+  min_exp = 0.01  # Lower threshold
+)
+```
+
+## Best Practices
+
+1. **Data Quality Control**
+   - Filter low-quality spots/cells before analysis
+   - Normalize expression data appropriately
+
+2. **Reference Selection**
+   - Use tissue-matched scRNA-seq reference
+   - Ensure cell type annotations are accurate
+
+3. **Parameter Tuning**
+   - Adjust `spot_max_cell` based on platform
+   - Use appropriate distance thresholds for tissue type
+
+4. **Validation**
+   - Cross-validate with known biological interactions
+   - Compare results across replicates
+
+## Session Info
+
+```{r session}
+sessionInfo()
+```

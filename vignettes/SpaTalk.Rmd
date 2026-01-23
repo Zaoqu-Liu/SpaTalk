@@ -1,0 +1,133 @@
+---
+title: "SpaTalk: Knowledge-Graph-Based Cell-Cell Communication Inference"
+author: 
+  - name: "Zaoqu Liu"
+    email: "liuzaoqu@163.com"
+    affiliation: "Maintainer"
+  - name: "Xin Shao"
+    email: "xin_shao@zju.edu.cn"
+    affiliation: "Original Developer"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{SpaTalk: Knowledge-Graph-Based Cell-Cell Communication Inference}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Introduction
+
+**SpaTalk** is a computational framework for inferring spatially resolved cell-cell communications (CCIs) from spatial transcriptomics (ST) data. Published in *Nature Communications* (2022), SpaTalk integrates graph network modeling and knowledge graph approaches to reconstruct ligand-receptor-target signaling networks between spatially proximal cells.
+
+### Citation
+
+> Shao, X., Li, C., Yang, H., et al. Knowledge-graph-based cell-cell communication inference for spatially resolved transcriptomic data with SpaTalk. *Nature Communications* **13**, 4429 (2022). https://doi.org/10.1038/s41467-022-32111-8
+
+### Key Features
+
+- **Cell-type deconvolution** for spot-based ST data using NNLM
+- **Spatial mapping** between scRNA-seq and ST data
+- **Knowledge graph-based** ligand-receptor-target pathway inference
+- **Permutation-based** statistical validation
+- Support for **single-cell** and **spot-based** ST platforms
+
+## Installation
+
+```{r install, eval=FALSE}
+# From R-universe (recommended)
+install.packages("SpaTalk", repos = "https://zaoqu-liu.r-universe.dev")
+
+# From GitHub
+devtools::install_github("Zaoqu-Liu/SpaTalk")
+```
+
+## Quick Start
+
+### Load Package and Data
+
+```{r load}
+library(SpaTalk)
+
+# Load built-in demo data
+load(system.file("extdata", "starmap_data.rda", package = "SpaTalk"))
+load(system.file("extdata", "starmap_meta.rda", package = "SpaTalk"))
+
+# Load curated databases
+data(lrpairs)
+data(pathways)
+
+cat("Expression matrix:", nrow(starmap_data), "genes x", ncol(starmap_data), "cells\n")
+cat("Metadata:", nrow(starmap_meta), "cells\n")
+cat("LR pairs:", nrow(lrpairs), "\n")
+```
+
+### Create SpaTalk Object
+
+```{r create}
+# Prepare spatial metadata
+st_meta <- data.frame(
+  cell = starmap_meta$cell,
+  x = starmap_meta$x,
+  y = starmap_meta$y
+)
+
+# Create SpaTalk object (single-cell resolution data)
+obj <- createSpaTalk(
+  st_data = starmap_data,
+  st_meta = st_meta,
+  species = "Mouse",
+  if_st_is_sc = TRUE,
+  spot_max_cell = 1,
+  celltype = starmap_meta$celltype
+)
+
+obj
+```
+
+### Filter LR-Pathway Pairs
+
+```{r filter}
+# Find LR pairs with downstream pathway targets
+obj <- find_lr_path(
+  object = obj,
+  lrpairs = lrpairs,
+  pathways = pathways,
+  if_doParallel = FALSE
+)
+
+cat("Filtered LR pairs:", nrow(obj@lr_path$lrpairs), "\n")
+```
+
+### Infer Cell-Cell Communications
+
+```{r cci, eval=FALSE}
+# Infer CCIs between specific cell types
+obj <- dec_cci(
+  object = obj,
+  celltype_sender = "eL6",
+  celltype_receiver = "PVALB"
+)
+
+# Or infer all pairwise CCIs
+obj <- dec_cci_all(object = obj, if_doParallel = FALSE)
+```
+
+## Session Info
+
+```{r session}
+sessionInfo()
+```

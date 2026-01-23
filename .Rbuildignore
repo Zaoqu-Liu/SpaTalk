@@ -7,3 +7,8 @@
 ^.*\.o$
 ^.*\.so$
 ^.*\.dll$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^README\.Rmd$

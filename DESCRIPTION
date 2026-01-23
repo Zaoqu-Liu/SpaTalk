@@ -11,7 +11,7 @@ Description: Infers spatially resolved cell-cell communications from spatial tra
     data using graph network and knowledge graph approaches. Supports both single-cell 
     resolution and spot-based spatial transcriptomics platforms. Provides cell type 
     deconvolution, ligand-receptor interaction analysis, and downstream pathway inference.
-URL: https://github.com/Zaoqu-Liu/SpaTalk
+URL: https://zaoqu-liu.github.io/SpaTalk/, https://github.com/Zaoqu-Liu/SpaTalk
 BugReports: https://github.com/Zaoqu-Liu/SpaTalk/issues
 License: GPL (>= 3)
 Encoding: UTF-8

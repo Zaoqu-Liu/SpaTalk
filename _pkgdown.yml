@@ -1,0 +1,131 @@
+url: https://zaoqu-liu.github.io/SpaTalk/
+destination: docs
+
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+  bslib:
+    primary: "#0d6efd"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+
+home:
+  title: SpaTalk - Spatial Cell-Cell Communication
+  description: >
+    Knowledge-graph-based cell-cell communication inference for 
+    spatially resolved transcriptomic data.
+
+authors:
+  Zaoqu Liu:
+    href: https://github.com/Zaoqu-Liu
+  Xin Shao:
+    href: https://github.com/ZJUFanLab
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get Started
+      href: articles/SpaTalk.html
+    articles:
+      text: Tutorials
+      menu:
+        - text: "Getting Started"
+        - text: Quick Start Guide
+          href: articles/SpaTalk.html
+        - text: "---"
+        - text: "Methodology"
+        - text: Algorithm & Methods
+          href: articles/algorithm.html
+        - text: "---"
+        - text: "Usage Guides"
+        - text: Visualization Guide
+          href: articles/visualization.html
+        - text: Platform-Specific Workflows
+          href: articles/platforms.html
+        - text: Advanced Usage
+          href: articles/advanced.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/Zaoqu-Liu/SpaTalk
+      aria-label: GitHub
+
+reference:
+  - title: "Object Creation"
+    desc: "Create and manage SpaTalk objects"
+    contents:
+      - createSpaTalk
+      - SpaTalk-class
+      - show,SpaTalk-method
+      
+  - title: "Cell-Type Deconvolution"
+    desc: "Deconvolve spot-based ST data"
+    contents:
+      - dec_celltype
+      - generate_spot
+      - set_expected_cell
+      
+  - title: "Cell-Cell Communication"
+    desc: "Infer spatially resolved CCIs"
+    contents:
+      - find_lr_path
+      - dec_cci
+      - dec_cci_all
+      - get_lr_path
+      
+  - title: "Visualization"
+    desc: "Plot spatial and CCI results"
+    contents:
+      - starts_with("plot_")
+      
+  - title: "Utilities"
+    desc: "Helper functions"
+    contents:
+      - rev_gene
+      
+  - title: "Data"
+    desc: "Built-in databases and demo data"
+    contents:
+      - lrpairs
+      - pathways
+      - geneinfo
+      - starts_with("demo_")
+
+  - title: "C++ Functions"
+    desc: "Optimized computational routines"
+    contents:
+      - starts_with("cpp_")
+      
+  - title: "Internal"
+    desc: "Internal helper functions"
+    contents:
+      - starts_with(".")
+
+articles:
+  - title: "Getting Started"
+    navbar: ~
+    contents:
+      - SpaTalk
+      
+  - title: "Methodology"
+    navbar: ~
+    contents:
+      - algorithm
+      
+  - title: "Usage Guides"
+    navbar: ~
+    contents:
+      - visualization
+      - platforms
+      - advanced
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with
+  components:
+    developed_by: >
+      Developed by [Zaoqu Liu](https://github.com/Zaoqu-Liu).
+      Originally created by [Xin Shao](https://github.com/ZJUFanLab).

@@ -1,0 +1,281 @@
+---
+title: "SpaTalk Visualization Guide"
+author: 
+  - name: "Zaoqu Liu"
+    email: "liuzaoqu@163.com"
+    affiliation: "Maintainer"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_caption: true
+vignette: >
+  %\VignetteIndexEntry{SpaTalk Visualization Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 6,
+  warning = FALSE,
+  message = FALSE,
+  out.width = "100%"
+)
+```
+
+## Introduction
+
+SpaTalk provides a comprehensive suite of visualization functions for exploring spatial transcriptomics data and cell-cell communication results. This vignette demonstrates all available plotting functions with examples.
+
+## Setup
+
+```{r load}
+library(SpaTalk)
+library(ggplot2)
+
+# Load demo data
+load(system.file("extdata", "starmap_data.rda", package = "SpaTalk"))
+load(system.file("extdata", "starmap_meta.rda", package = "SpaTalk"))
+data(lrpairs)
+data(pathways)
+
+# Create SpaTalk object
+st_meta <- data.frame(
+  cell = starmap_meta$cell,
+  x = starmap_meta$x,
+  y = starmap_meta$y
+)
+
+obj <- createSpaTalk(
+  st_data = starmap_data,
+  st_meta = st_meta,
+  species = "Mouse",
+  if_st_is_sc = TRUE,
+  spot_max_cell = 1,
+  celltype = starmap_meta$celltype
+)
+
+obj <- find_lr_path(obj, lrpairs, pathways, if_doParallel = FALSE)
+```
+
+## Spatial Cell Type Visualization
+
+### plot_st_celltype
+
+Visualize cell type distributions in spatial coordinates.
+
+```{r celltype, eval=FALSE, fig.cap="Spatial distribution of cell types"}
+plot_st_celltype(
+  object = obj,
+  celltype = unique(starmap_meta$celltype)[1:3],
+  size = 1.5
+)
+```
+
+### plot_st_celltype_all
+
+Display all cell types in a single spatial plot.
+
+```{r celltype_all, eval=FALSE, fig.cap="All cell types in spatial context"}
+plot_st_celltype_all(
+  object = obj,
+  size = 1
+)
+```
+
+### plot_st_celltype_percent
+
+Show cell type composition as pie charts per spot (for spot-based data).
+```{r celltype_percent, eval=FALSE, fig.cap="Cell type proportions per spot"}
+# For spot-based ST data after deconvolution
+plot_st_celltype_percent(
+  object = obj_spot,
+  celltype = c("Macrophage", "Fibroblast", "T_cell")
+)
+```
+
+### plot_st_celltype_density
+
+Kernel density estimation of cell type spatial distributions.
+
+```{r celltype_density, eval=FALSE, fig.cap="Cell type density map"}
+plot_st_celltype_density(
+  object = obj,
+  celltype = "eL6"
+)
+```
+
+## Gene Expression Visualization
+
+### plot_st_gene
+
+Visualize gene expression patterns in spatial coordinates.
+
+```{r gene, eval=FALSE, fig.cap="Spatial gene expression"}
+# Get available genes
+genes <- rownames(obj@data$rawdata)[1:2]
+
+plot_st_gene(
+  object = obj,
+  gene = genes[1],
+  size = 1.5
+)
+```
+
+## Cell-Cell Communication Visualization
+
+After running `dec_cci()` or `dec_cci_all()`, various CCI visualizations become available.
+
+### plot_cci_lrpairs
+
+Chord diagram showing ligand-receptor interactions between cell types.
+
+```{r cci_chord, eval=FALSE, fig.cap="LR pair interactions (chord diagram)"}
+plot_cci_lrpairs(
+  object = obj,
+  celltype_sender = "eL6",
+  celltype_receiver = "PVALB"
+)
+```
+
+### plot_lrpair
+
+Spatial visualization of specific ligand-receptor pair interactions.
+
+```{r lrpair, eval=FALSE, fig.cap="Spatial LR pair visualization"}
+plot_lrpair(
+  object = obj,
+  ligand = "Cxcl12",
+  receptor = "Cxcr4",
+  celltype_sender = "Fibroblast",
+  celltype_receiver = "T_cell"
+)
+```
+
+### plot_lrpair_vln
+
+Violin plot comparing ligand/receptor expression across cell types.
+
+```{r lrpair_vln, eval=FALSE, fig.cap="LR expression violin plot"}
+plot_lrpair_vln(
+  object = obj,
+  ligand = "Cxcl12",
+  receptor = "Cxcr4"
+)
+```
+
+## Pathway Visualization
+
+### plot_lr_path
+
+Network visualization of ligand-receptor-pathway connections.
+
+```{r lr_path, eval=FALSE, fig.cap="LR-pathway network"}
+plot_lr_path(
+  object = obj,
+  ligand = "Cxcl12",
+  receptor = "Cxcr4",
+  celltype_sender = "Fibroblast",
+  celltype_receiver = "T_cell"
+)
+```
+
+### plot_path2gene
+
+Heatmap of pathway gene expression.
+
+```{r path2gene, eval=FALSE, fig.cap="Pathway-gene heatmap"}
+plot_path2gene(
+  object = obj,
+  celltype_receiver = "T_cell",
+  receptor = "Cxcr4"
+)
+```
+
+## Correlation Analysis
+
+### plot_st_cor_heatmap
+
+Correlation heatmap between cell types or gene sets.
+
+```{r cor_heatmap, eval=FALSE, fig.cap="Cell type correlation heatmap"}
+plot_st_cor_heatmap(
+  object = obj,
+  celltype = c("eL6", "PVALB", "Astro", "SST")
+)
+```
+
+## Cell-Cell Distance Distribution
+
+### plot_ccdist
+
+Distribution of distances between interacting cell types.
+
+```{r ccdist, eval=FALSE, fig.cap="Cell-cell distance distribution"}
+plot_ccdist(
+  object = obj,
+  celltype_sender = "eL6",
+  celltype_receiver = "PVALB"
+)
+```
+
+## Customization Tips
+
+### Color Palettes
+
+SpaTalk uses ggplot2 for all visualizations. Customize colors easily:
+
+```{r colors, eval=FALSE, fig.cap="Custom color palette example"}
+library(ggplot2)
+
+# Create base plot
+p <- plot_st_celltype_all(obj, size = 1)
+
+# Add custom theme
+p + 
+  scale_color_brewer(palette = "Set2") +
+  theme_minimal() +
+  labs(title = "Custom Styled Plot")
+```
+
+### Combining Plots
+
+Use patchwork or cowplot for multi-panel figures:
+
+```{r combine, eval=FALSE}
+library(patchwork)
+
+p1 <- plot_st_celltype(obj, celltype = "eL6")
+p2 <- plot_st_celltype(obj, celltype = "PVALB")
+
+p1 + p2 + plot_layout(ncol = 2)
+```
+
+## Summary of Visualization Functions
+
+| Function | Description | Input Required |
+|----------|-------------|----------------|
+| `plot_st_celltype` | Single cell type spatial | SpaTalk object |
+| `plot_st_celltype_all` | All cell types spatial | SpaTalk object |
+| `plot_st_celltype_percent` | Pie chart per spot | Deconvolved object |
+| `plot_st_celltype_density` | Density heatmap | SpaTalk object |
+| `plot_st_gene` | Gene expression spatial | SpaTalk object |
+| `plot_st_pie` | Pie chart composition | Deconvolved object |
+| `plot_cci_lrpairs` | CCI chord diagram | After dec_cci |
+| `plot_lrpair` | LR pair spatial | After dec_cci |
+| `plot_lrpair_vln` | LR violin plot | After dec_cci |
+| `plot_lr_path` | LR-pathway network | After dec_cci |
+| `plot_path2gene` | Pathway heatmap | After dec_cci |
+| `plot_st_cor_heatmap` | Correlation heatmap | SpaTalk object |
+| `plot_ccdist` | Distance distribution | SpaTalk object |
+
+## Session Info
+
+```{r session}
+sessionInfo()
+```
