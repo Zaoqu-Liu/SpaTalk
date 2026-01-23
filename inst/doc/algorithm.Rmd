@@ -1,0 +1,241 @@
+---
+title: "SpaTalk Algorithm: Methodological Framework"
+author: 
+  - name: "Zaoqu Liu"
+    email: "liuzaoqu@163.com"
+    affiliation: "Maintainer"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_caption: true
+vignette: >
+  %\VignetteIndexEntry{SpaTalk Algorithm: Methodological Framework}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 6,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Overview
+
+SpaTalk employs a multi-step computational framework to infer spatially resolved cell-cell communications from spatial transcriptomics data. This vignette provides detailed explanations of the underlying algorithms.
+## Algorithmic Pipeline
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     SpaTalk Pipeline                            │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Cell-type Deconvolution (for spot-based ST)                 │
+│     └── Non-negative Linear Model (NNLM)                        │
+│                                                                 │
+│  2. Spatial Reconstruction                                      │
+│     └── Monte Carlo sampling + k-NN spatial mapping             │
+│                                                                 │
+│  3. LR-Pathway Filtering                                        │
+│     └── Knowledge graph: LR pairs → Downstream TFs              │
+│                                                                 │
+│  4. CCI Inference                                               │
+│     └── Co-expression analysis + Permutation test               │
+│                                                                 │
+│  5. Pathway Scoring                                             │
+│     └── Random walk on gene-gene interaction graph              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 1. Cell-Type Deconvolution
+
+### Mathematical Formulation
+
+For spot-based ST data where each spot contains multiple cells, SpaTalk decomposes the observed expression profile into cell-type-specific contributions using **Non-negative Matrix Factorization (NMF)**.
+
+Given:
+- $X \in \mathbb{R}^{G \times S}$: ST expression matrix (genes × spots)
+- $R \in \mathbb{R}^{G \times C}$: Reference expression profile (genes × cell types)
+
+The deconvolution problem is formulated as:
+
+$$X \approx R \cdot W$$
+
+where $W \in \mathbb{R}^{C \times S}$ represents cell-type proportions per spot, subject to:
+- $W_{ij} \geq 0$ (non-negativity)
+- $\sum_i W_{ij} = 1$ (proportions sum to 1)
+
+### NNLM Algorithm
+
+SpaTalk uses the NNLM (Non-Negative Linear Model) package with the following optimization:
+
+$$\min_{W \geq 0} \|X - RW\|_F^2 + \lambda \|W\|_1$$
+
+The L1 regularization term promotes sparsity in cell-type assignments.
+
+```{r nnlm_demo, eval=FALSE}
+# Deconvolution workflow
+obj <- dec_celltype(
+  object = obj,
+  sc_data = sc_counts,      # scRNA-seq reference
+  sc_celltype = cell_labels, # Cell type annotations
+  if_doParallel = TRUE
+)
+```
+
+## 2. Spatial Reconstruction
+
+### Monte Carlo Spatial Sampling
+
+After deconvolution, SpaTalk reconstructs single-cell resolution expression by sampling cells from the reference data according to:
+
+1. **Cell proportion sampling**: For each spot $s$ with predicted proportions $W_s$, sample $N_s$ cells where $N_s$ is the expected number of cells per spot.
+
+2. **Spatial coordinate assignment**: Assign coordinates to sampled cells using a weighted distance model:
+
+$$P(x_i | s) \propto \exp\left(-\frac{d(x_i, c_s)^2}{2\sigma^2}\right)$$
+
+where $c_s$ is the spot centroid and $\sigma$ controls the spatial spread.
+
+### k-Nearest Neighbor Mapping
+
+For each reconstructed cell, find the k-nearest neighbors in the original ST data to refine expression estimates:
+
+$$\hat{E}_i = \frac{1}{|N_k(i)|} \sum_{j \in N_k(i)} E_j \cdot w_{ij}$$
+
+where $w_{ij}$ is the distance-based weight.
+
+## 3. Knowledge Graph Integration
+
+### LR-Pathway Database
+
+SpaTalk integrates curated biological knowledge from multiple databases:
+
+| Database | Content | Size |
+|----------|---------|------|
+| CellTalkDB | Ligand-receptor pairs | 3,398 (Human), 2,033 (Mouse) |
+| KEGG | Signaling pathways | ~300 pathways |
+| Reactome | Pathway interactions | ~2,000 pathways |
+| AnimalTFDB | Transcription factors | ~1,600 TFs |
+
+### Pathway Filtering Algorithm
+
+```{r pathway_filter, eval=FALSE}
+# The find_lr_path function filters LR pairs with downstream targets
+obj <- find_lr_path(obj, lrpairs, pathways)
+
+# Filter criteria:
+# 1. Both ligand and receptor expressed in ST data
+# 2. Downstream pathway genes present
+# 3. Target TFs expressed
+```
+
+## 4. Cell-Cell Communication Inference
+
+### Co-expression Score
+
+For a ligand-receptor pair (L, R) between sender cell type A and receiver cell type B:
+
+$$\text{CoExp}(L_A, R_B) = \frac{|\{(a,b) : E_L^a > 0 \land E_R^b > 0 \land d(a,b) < \delta\}|}{|\{(a,b) : d(a,b) < \delta\}|}$$
+
+where $\delta$ is the spatial distance threshold.
+
+### Permutation Test
+
+Statistical significance is assessed via permutation:
+
+1. Permute cell type labels $n$ times (default: 1000)
+2. Recalculate co-expression for each permutation
+3. Compute p-value:
+
+$$p = \frac{|\{\pi : \text{CoExp}^\pi \geq \text{CoExp}^{obs}\}| + 1}{n + 1}$$
+
+```{r permutation, eval=FALSE}
+# CCI inference with permutation testing
+obj <- dec_cci(
+  object = obj,
+  celltype_sender = "Macrophage",
+  celltype_receiver = "Fibroblast",
+  n_permutation = 1000
+)
+```
+
+## 5. Downstream Pathway Scoring
+
+### Random Walk Algorithm
+
+To score downstream transcription factors activated by a receptor, SpaTalk performs random walks on the gene-gene interaction (GGI) graph:
+
+**Algorithm: Random Walk TF Scoring**
+
+```
+Input: GGI graph G, receptor R, TF set T, n_walks, max_hop
+Output: TF scores
+
+Initialize: score[tf] = 0 for all tf in T
+
+for i = 1 to n_walks:
+    current = R
+    for hop = 1 to max_hop:
+        neighbors = G.neighbors(current)
+        if neighbors is empty: break
+        next = random_choice(neighbors)
+        if next in T:
+            score[next] += 1
+        current = next
+
+Return: score / n_walks
+```
+
+### C++ Implementation
+
+SpaTalk uses optimized C++ code for performance-critical computations:
+
+```cpp
+// Simplified random walk implementation
+NumericVector cpp_random_walk(
+    CharacterVector ggi_src,
+    CharacterVector ggi_dest,
+    String receptor_name,
+    CharacterVector tf_names,
+    int n_walks = 10000,
+    int max_hop = 10
+) {
+    // Build adjacency list
+    // Perform random walks
+    // Count TF visits
+    // Return normalized scores
+}
+```
+
+## Computational Complexity
+
+| Step | Time Complexity | Space Complexity |
+|------|-----------------|------------------|
+| Deconvolution | $O(G \cdot S \cdot C)$ | $O(G \cdot S)$ |
+| Spatial reconstruction | $O(S \cdot N \cdot k)$ | $O(N)$ |
+| Co-expression | $O(L \cdot N^2)$ | $O(N^2)$ |
+| Permutation test | $O(P \cdot L \cdot N^2)$ | $O(N^2)$ |
+| Random walk | $O(W \cdot H)$ | $O(|E|)$ |
+
+Where: G = genes, S = spots, C = cell types, N = cells, L = LR pairs, P = permutations, W = walks, H = max hops, E = edges.
+
+## References
+
+1. Shao, X., et al. (2022). Knowledge-graph-based cell-cell communication inference for spatially resolved transcriptomic data with SpaTalk. *Nature Communications*, 13, 4429.
+
+2. Lin, X., & Boutros, P. C. (2020). Optimization and expansion of non-negative matrix factorization. *BMC Bioinformatics*, 21, 7.
+
+3. Kanehisa, M., & Goto, S. (2000). KEGG: Kyoto Encyclopedia of Genes and Genomes. *Nucleic Acids Research*, 28(1), 27-30.
+
+## Session Info
+
+```{r session}
+sessionInfo()
+```

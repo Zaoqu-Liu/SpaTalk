@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2026-01-23" />
+
+<title>SpaTalk for Different Spatial Transcriptomics Platforms</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">SpaTalk for Different Spatial
+Transcriptomics Platforms</h1>
+<h4 class="author">Zaoqu Liu</h4>
+<address class="author_afil">
+Maintainer<br><a class="author_email" href="mailto:#"><a href="mailto:liuzaoqu@163.com" class="email">liuzaoqu@163.com</a></a>
+</address>
+<h4 class="date">2026-01-23</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#spot-based-platforms" id="toc-spot-based-platforms">Spot-Based Platforms</a>
+<ul>
+<li><a href="#x-visium" id="toc-x-visium">10x Visium</a></li>
+<li><a href="#slide-seq-slide-seqv2" id="toc-slide-seq-slide-seqv2">Slide-seq / Slide-seqV2</a></li>
+<li><a href="#spatial-transcriptomics-original-st" id="toc-spatial-transcriptomics-original-st">Spatial Transcriptomics
+(Original ST)</a></li>
+</ul></li>
+<li><a href="#single-cell-resolution-platforms" id="toc-single-cell-resolution-platforms">Single-Cell Resolution
+Platforms</a>
+<ul>
+<li><a href="#starmap" id="toc-starmap">STARmap</a></li>
+<li><a href="#merfish" id="toc-merfish">MERFISH</a></li>
+<li><a href="#x-xenium" id="toc-x-xenium">10x Xenium</a></li>
+<li><a href="#seqfish" id="toc-seqfish">seqFISH+</a></li>
+</ul></li>
+<li><a href="#workflow-comparison" id="toc-workflow-comparison">Workflow
+Comparison</a>
+<ul>
+<li><a href="#spot-based-workflow" id="toc-spot-based-workflow">Spot-based Workflow</a></li>
+<li><a href="#single-cell-workflow" id="toc-single-cell-workflow">Single-cell Workflow</a></li>
+</ul></li>
+<li><a href="#parameter-guidelines-by-platform" id="toc-parameter-guidelines-by-platform">Parameter Guidelines by
+Platform</a></li>
+<li><a href="#best-practices" id="toc-best-practices">Best Practices</a>
+<ul>
+<li><a href="#for-spot-based-data" id="toc-for-spot-based-data">For
+Spot-based Data</a></li>
+<li><a href="#for-single-cell-data" id="toc-for-single-cell-data">For
+Single-cell Data</a></li>
+</ul></li>
+<li><a href="#session-info" id="toc-session-info">Session Info</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>Spatial transcriptomics technologies can be broadly categorized into
+two types:</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="22%" />
+<col width="20%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Resolution</th>
+<th>Examples</th>
+<th>SpaTalk Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Spot-based</strong></td>
+<td>Multi-cellular</td>
+<td>10x Visium, Slide-seq, ST</td>
+<td><code>if_st_is_sc = FALSE</code></td>
+</tr>
+<tr class="even">
+<td><strong>Single-cell</strong></td>
+<td>Cellular</td>
+<td>STARmap, MERFISH, seqFISH+, Xenium</td>
+<td><code>if_st_is_sc = TRUE</code></td>
+</tr>
+</tbody>
+</table>
+<p>This vignette provides platform-specific guidance for using
+SpaTalk.</p>
+</div>
+<div id="spot-based-platforms" class="section level2">
+<h2>Spot-Based Platforms</h2>
+<div id="x-visium" class="section level3">
+<h3>10x Visium</h3>
+<p>Visium captures ~1-10 cells per 55μm diameter spot with
+whole-transcriptome coverage.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(SpaTalk)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Load Visium data using Seurat</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>visium <span class="ot">&lt;-</span> <span class="fu">Load10X_Spatial</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">data.dir =</span> <span class="st">&quot;path/to/spaceranger/output/&quot;</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;filtered_feature_bc_matrix.h5&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Quality control</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>visium <span class="ot">&lt;-</span> <span class="fu">subset</span>(visium, </span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  nFeature_Spatial <span class="sc">&gt;</span> <span class="dv">200</span> <span class="sc">&amp;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  nFeature_Spatial <span class="sc">&lt;</span> <span class="dv">10000</span> <span class="sc">&amp;</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  percent.mt <span class="sc">&lt;</span> <span class="dv">20</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co"># Extract for SpaTalk</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>st_data <span class="ot">&lt;-</span> <span class="fu">GetAssayData</span>(visium, <span class="at">slot =</span> <span class="st">&quot;counts&quot;</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">GetTissueCoordinates</span>(visium)</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>st_meta <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="at">spot =</span> <span class="fu">rownames</span>(coords),</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="at">x =</span> coords<span class="sc">$</span>imagerow,</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>  <span class="at">y =</span> coords<span class="sc">$</span>imagecol</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>)</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="co"># Create SpaTalk object</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>  <span class="at">st_data =</span> st_data,</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>  <span class="at">st_meta =</span> st_meta,</span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">&quot;Human&quot;</span>,</span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>  <span class="at">if_st_is_sc =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>  <span class="at">spot_max_cell =</span> <span class="dv">8</span>  <span class="co"># Visium: ~1-10 cells/spot</span></span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>)</span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a><span class="co"># Deconvolution with scRNA-seq reference</span></span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">dec_celltype</span>(</span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>  <span class="at">object =</span> obj,</span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>  <span class="at">sc_data =</span> sc_reference,</span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>  <span class="at">sc_celltype =</span> sc_annotations</span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="slide-seq-slide-seqv2" class="section level3">
+<h3>Slide-seq / Slide-seqV2</h3>
+<p>Slide-seq uses 10μm beads, typically capturing 1-10 cells per
+bead.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load Slide-seq data</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Typically stored as sparse matrix + coordinates</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Create SpaTalk object</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">st_data =</span> slideseq_counts,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">st_meta =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="at">spot =</span> <span class="fu">colnames</span>(slideseq_counts),</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="at">x =</span> bead_coordinates<span class="sc">$</span>x,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">y =</span> bead_coordinates<span class="sc">$</span>y</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  ),</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">&quot;Mouse&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">if_st_is_sc =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="at">spot_max_cell =</span> <span class="dv">5</span>  <span class="co"># Slide-seq: smaller spots</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="spatial-transcriptomics-original-st" class="section level3">
+<h3>Spatial Transcriptomics (Original ST)</h3>
+<p>The original ST platform uses ~100μm spots.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">st_data =</span> st_counts,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">st_meta =</span> st_coords,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">&quot;Human&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">if_st_is_sc =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">spot_max_cell =</span> <span class="dv">20</span>  <span class="co"># Larger spots</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+</div>
+<div id="single-cell-resolution-platforms" class="section level2">
+<h2>Single-Cell Resolution Platforms</h2>
+<div id="starmap" class="section level3">
+<h3>STARmap</h3>
+<p>STARmap provides single-cell resolution with targeted gene
+panels.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(SpaTalk)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Load built-in STARmap demo data</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;starmap_data.rda&quot;</span>, <span class="at">package =</span> <span class="st">&quot;SpaTalk&quot;</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">load</span>(<span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;starmap_meta.rda&quot;</span>, <span class="at">package =</span> <span class="st">&quot;SpaTalk&quot;</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># Check data dimensions</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Genes:&quot;</span>, <span class="fu">nrow</span>(starmap_data), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; Genes: 996</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Cells:&quot;</span>, <span class="fu">ncol</span>(starmap_data), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; Cells: 930</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Cell types:&quot;</span>, <span class="fu">length</span>(<span class="fu">unique</span>(starmap_meta<span class="sc">$</span>celltype)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; Cell types: 14</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co"># Create SpaTalk object - NO deconvolution needed</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>st_meta <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>  <span class="at">cell =</span> starmap_meta<span class="sc">$</span>cell,</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="at">x =</span> starmap_meta<span class="sc">$</span>x,</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="at">y =</span> starmap_meta<span class="sc">$</span>y</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>  <span class="at">st_data =</span> starmap_data,</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>  <span class="at">st_meta =</span> st_meta,</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">&quot;Mouse&quot;</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>  <span class="at">if_st_is_sc =</span> <span class="cn">TRUE</span>,       <span class="co"># Single-cell resolution</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>  <span class="at">spot_max_cell =</span> <span class="dv">1</span>,        <span class="co"># One cell per &quot;spot&quot;</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>  <span class="at">celltype =</span> starmap_meta<span class="sc">$</span>celltype  <span class="co"># Direct annotation</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>)</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>obj</span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; An object of class SpaTalk </span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; 996 genes across 930 single-cells (0 lrpair)</span></span></code></pre></div>
+</div>
+<div id="merfish" class="section level3">
+<h3>MERFISH</h3>
+<p>MERFISH images hundreds to thousands of genes at single-cell
+resolution.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Load MERFISH data (example format)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>merfish_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;merfish_counts.rds&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>merfish_meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;merfish_metadata.csv&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">st_data =</span> merfish_data,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">st_meta =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="at">cell =</span> merfish_meta<span class="sc">$</span>cell_id,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="at">x =</span> merfish_meta<span class="sc">$</span>x_centroid,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="at">y =</span> merfish_meta<span class="sc">$</span>y_centroid</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  ),</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">&quot;Mouse&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="at">if_st_is_sc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="at">spot_max_cell =</span> <span class="dv">1</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="at">celltype =</span> merfish_meta<span class="sc">$</span>cell_type</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="x-xenium" class="section level3">
+<h3>10x Xenium</h3>
+<p>Xenium provides single-cell resolution with ~300-500 gene panels.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Load Xenium output</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>xenium_cells <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;cells.csv.gz&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>xenium_matrix <span class="ot">&lt;-</span> <span class="fu">Read10X</span>(<span class="st">&quot;cell_feature_matrix/&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">st_data =</span> xenium_matrix,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="at">st_meta =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="at">cell =</span> xenium_cells<span class="sc">$</span>cell_id,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    <span class="at">x =</span> xenium_cells<span class="sc">$</span>x_centroid,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    <span class="at">y =</span> xenium_cells<span class="sc">$</span>y_centroid</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  ),</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">&quot;Human&quot;</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="at">if_st_is_sc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">spot_max_cell =</span> <span class="dv">1</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">celltype =</span> xenium_cells<span class="sc">$</span>cluster  <span class="co"># From clustering</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="seqfish" class="section level3">
+<h3>seqFISH+</h3>
+<p>seqFISH+ images ~10,000 genes at single-cell resolution.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">st_data =</span> seqfish_counts,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">st_meta =</span> seqfish_coords,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">&quot;Mouse&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">if_st_is_sc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">spot_max_cell =</span> <span class="dv">1</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">celltype =</span> seqfish_annotations</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+</div>
+<div id="workflow-comparison" class="section level2">
+<h2>Workflow Comparison</h2>
+<div id="spot-based-workflow" class="section level3">
+<h3>Spot-based Workflow</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># 1. Create object (spot-based)</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(st_data, st_meta, <span class="st">&quot;Human&quot;</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>                     <span class="at">if_st_is_sc =</span> <span class="cn">FALSE</span>, <span class="at">spot_max_cell =</span> <span class="dv">10</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co"># 2. Deconvolution (REQUIRED)</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">dec_celltype</span>(obj, sc_data, sc_celltype)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co"># 3. Filter LR paths</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">find_lr_path</span>(obj, lrpairs, pathways)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co"># 4. Infer CCIs</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">dec_cci_all</span>(obj)</span></code></pre></div>
+</div>
+<div id="single-cell-workflow" class="section level3">
+<h3>Single-cell Workflow</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># 1. Create object with cell types (single-cell)</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">createSpaTalk</span>(st_data, st_meta, <span class="st">&quot;Mouse&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                     <span class="at">if_st_is_sc =</span> <span class="cn">TRUE</span>, <span class="at">spot_max_cell =</span> <span class="dv">1</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>                     <span class="at">celltype =</span> annotations)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co"># 2. NO deconvolution needed</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co"># 3. Filter LR paths</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">find_lr_path</span>(obj, lrpairs, pathways)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co"># 4. Infer CCIs</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">dec_cci_all</span>(obj)</span></code></pre></div>
+</div>
+</div>
+<div id="parameter-guidelines-by-platform" class="section level2">
+<h2>Parameter Guidelines by Platform</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th><code>spot_max_cell</code></th>
+<th>Deconvolution</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10x Visium</td>
+<td>5-10</td>
+<td>Required</td>
+<td>55μm spots</td>
+</tr>
+<tr class="even">
+<td>Slide-seq</td>
+<td>3-8</td>
+<td>Required</td>
+<td>10μm beads</td>
+</tr>
+<tr class="odd">
+<td>Slide-seqV2</td>
+<td>3-8</td>
+<td>Required</td>
+<td>Improved capture</td>
+</tr>
+<tr class="even">
+<td>Original ST</td>
+<td>15-30</td>
+<td>Required</td>
+<td>100μm spots</td>
+</tr>
+<tr class="odd">
+<td>STARmap</td>
+<td>1</td>
+<td>Not needed</td>
+<td>Single-cell</td>
+</tr>
+<tr class="even">
+<td>MERFISH</td>
+<td>1</td>
+<td>Not needed</td>
+<td>Single-cell</td>
+</tr>
+<tr class="odd">
+<td>Xenium</td>
+<td>1</td>
+<td>Not needed</td>
+<td>Single-cell</td>
+</tr>
+<tr class="even">
+<td>seqFISH+</td>
+<td>1</td>
+<td>Not needed</td>
+<td>Single-cell</td>
+</tr>
+<tr class="odd">
+<td>CosMx</td>
+<td>1</td>
+<td>Not needed</td>
+<td>Single-cell</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="best-practices" class="section level2">
+<h2>Best Practices</h2>
+<div id="for-spot-based-data" class="section level3">
+<h3>For Spot-based Data</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Reference selection</strong>: Use tissue-matched
+scRNA-seq</li>
+<li><strong>Deconvolution validation</strong>: Check proportions against
+known biology</li>
+<li><strong>Spatial coherence</strong>: Verify cell types cluster
+appropriately</li>
+</ol>
+</div>
+<div id="for-single-cell-data" class="section level3">
+<h3>For Single-cell Data</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Cell type annotation</strong>: Use robust clustering
+methods</li>
+<li><strong>Quality control</strong>: Filter low-quality cells</li>
+<li><strong>Gene coverage</strong>: Consider gene panel limitations</li>
+</ol>
+</div>
+</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; R version 4.4.0 (2024-04-24)</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; Platform: aarch64-apple-darwin20</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; Running under: macOS 15.6.1</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib </span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; [1] C</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; time zone: Asia/Shanghai</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt; tzcode source: internal</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; [1] parallel  stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; [8] base     </span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; [1] SpaTalk_2.0.0     doParallel_1.0.17 iterators_1.0.14  foreach_1.5.2    </span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; [5] ggalluvial_0.12.5 ggplot2_4.0.1     rmarkdown_2.30    knitr_1.51       </span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt;   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.4        </span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt;   [4] spatstat.utils_3.2-1   farver_2.1.2           fs_1.6.6              </span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt;   [7] vctrs_0.7.0            ROCR_1.0-11            spatstat.explore_3.6-0</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="co">#&gt;  [10] rstatix_0.7.3          htmltools_0.5.9        progress_1.2.3        </span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="co">#&gt;  [13] broom_1.0.11           Formula_1.2-5          sass_0.4.10           </span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="co">#&gt;  [16] sctransform_0.4.3      parallelly_1.46.1      KernSmooth_2.23-26    </span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="co">#&gt;  [19] bslib_0.9.0            htmlwidgets_1.6.4      ica_1.0-3             </span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="co">#&gt;  [22] plyr_1.8.9             plotly_4.11.0          zoo_1.8-15            </span></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt;  [25] cachem_1.1.0           igraph_2.2.1           mime_0.13             </span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co">#&gt;  [28] lifecycle_1.0.5        pkgconfig_2.0.3        Matrix_1.7-4          </span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co">#&gt;  [31] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-4    </span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co">#&gt;  [34] future_1.69.0          shiny_1.12.1           digest_0.6.39         </span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="co">#&gt;  [37] patchwork_1.3.2        Seurat_4.4.0           tensor_1.5.1          </span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="co">#&gt;  [40] irlba_2.3.5.1          ggpubr_0.6.2           progressr_0.18.0      </span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a><span class="co">#&gt;  [43] spatstat.sparse_3.1-0  httr_1.4.7             polyclip_1.10-7       </span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="co">#&gt;  [46] abind_1.4-8            compiler_4.4.0         withr_3.0.2           </span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="co">#&gt;  [49] backports_1.5.0        S7_0.2.1               carData_3.0-5         </span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="co">#&gt;  [52] ggforce_0.5.0          ggsignif_0.6.4         MASS_7.3-65           </span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a><span class="co">#&gt;  [55] rappdirs_0.3.4         tools_4.4.0            lmtest_0.9-40         </span></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="co">#&gt;  [58] otel_0.2.0             scatterpie_0.2.6       httpuv_1.6.16         </span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a><span class="co">#&gt;  [61] future.apply_1.20.1    goftest_1.2-3          glue_1.8.0            </span></span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a><span class="co">#&gt;  [64] nlme_3.1-168           promises_1.5.0         grid_4.4.0            </span></span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a><span class="co">#&gt;  [67] Rtsne_0.17             cluster_2.1.8.1        reshape2_1.4.5        </span></span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a><span class="co">#&gt;  [70] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-9   </span></span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a><span class="co">#&gt;  [73] tzdb_0.5.0             tidyr_1.3.2            data.table_1.18.0     </span></span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a><span class="co">#&gt;  [76] hms_1.1.4              car_3.1-3              sp_2.2-0              </span></span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="co">#&gt;  [79] spatstat.geom_3.6-1    RcppAnnoy_0.0.23       ggrepel_0.9.6         </span></span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a><span class="co">#&gt;  [82] RANN_2.6.2             pillar_1.11.1          stringr_1.6.0         </span></span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a><span class="co">#&gt;  [85] yulab.utils_0.2.3      ggExtra_0.11.0         later_1.4.5           </span></span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a><span class="co">#&gt;  [88] splines_4.4.0          dplyr_1.1.4            tweenr_2.0.3          </span></span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a><span class="co">#&gt;  [91] lattice_0.22-7         survival_3.8-3         deldir_2.0-4          </span></span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a><span class="co">#&gt;  [94] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         </span></span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a><span class="co">#&gt;  [97] gridExtra_2.3          scattermore_1.2        xfun_0.56             </span></span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a><span class="co">#&gt; [100] matrixStats_1.5.0      pheatmap_1.0.13        stringi_1.8.7         </span></span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a><span class="co">#&gt; [103] lazyeval_0.2.2         ggfun_0.2.0            yaml_2.3.12           </span></span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a><span class="co">#&gt; [106] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          </span></span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a><span class="co">#&gt; [109] cli_3.6.5              uwot_0.2.4             xtable_1.8-4          </span></span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a><span class="co">#&gt; [112] reticulate_1.44.1      jquerylib_0.1.4        dichromat_2.0-0.1     </span></span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a><span class="co">#&gt; [115] Rcpp_1.1.1             globals_0.18.0         spatstat.random_3.4-3 </span></span>
+<span id="cb10-64"><a href="#cb10-64" tabindex="-1"></a><span class="co">#&gt; [118] png_0.1-8              spatstat.univar_3.1-6  readr_2.1.6           </span></span>
+<span id="cb10-65"><a href="#cb10-65" tabindex="-1"></a><span class="co">#&gt; [121] NNLM_0.4.4             prettyunits_1.2.0      listenv_0.10.0        </span></span>
+<span id="cb10-66"><a href="#cb10-66" tabindex="-1"></a><span class="co">#&gt; [124] viridisLite_0.4.2      scales_1.4.0           ggridges_0.5.7        </span></span>
+<span id="cb10-67"><a href="#cb10-67" tabindex="-1"></a><span class="co">#&gt; [127] SeuratObject_4.1.4     leiden_0.4.3.1         purrr_1.2.1           </span></span>
+<span id="cb10-68"><a href="#cb10-68" tabindex="-1"></a><span class="co">#&gt; [130] crayon_1.5.3           rlang_1.1.7            cowplot_1.2.0</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

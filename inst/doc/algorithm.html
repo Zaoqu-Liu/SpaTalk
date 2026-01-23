@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2026-01-23" />
+
+<title>SpaTalk Algorithm: Methodological Framework</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">SpaTalk Algorithm: Methodological
+Framework</h1>
+<h4 class="author">Zaoqu Liu</h4>
+<address class="author_afil">
+Maintainer<br><a class="author_email" href="mailto:#"><a href="mailto:liuzaoqu@163.com" class="email">liuzaoqu@163.com</a></a>
+</address>
+<h4 class="date">2026-01-23</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#cell-type-deconvolution" id="toc-cell-type-deconvolution">1. Cell-Type Deconvolution</a>
+<ul>
+<li><a href="#mathematical-formulation" id="toc-mathematical-formulation">Mathematical Formulation</a></li>
+<li><a href="#nnlm-algorithm" id="toc-nnlm-algorithm">NNLM
+Algorithm</a></li>
+</ul></li>
+<li><a href="#spatial-reconstruction" id="toc-spatial-reconstruction">2.
+Spatial Reconstruction</a>
+<ul>
+<li><a href="#monte-carlo-spatial-sampling" id="toc-monte-carlo-spatial-sampling">Monte Carlo Spatial
+Sampling</a></li>
+<li><a href="#k-nearest-neighbor-mapping" id="toc-k-nearest-neighbor-mapping">k-Nearest Neighbor Mapping</a></li>
+</ul></li>
+<li><a href="#knowledge-graph-integration" id="toc-knowledge-graph-integration">3. Knowledge Graph Integration</a>
+<ul>
+<li><a href="#lr-pathway-database" id="toc-lr-pathway-database">LR-Pathway Database</a></li>
+<li><a href="#pathway-filtering-algorithm" id="toc-pathway-filtering-algorithm">Pathway Filtering
+Algorithm</a></li>
+</ul></li>
+<li><a href="#cell-cell-communication-inference" id="toc-cell-cell-communication-inference">4. Cell-Cell Communication
+Inference</a>
+<ul>
+<li><a href="#co-expression-score" id="toc-co-expression-score">Co-expression Score</a></li>
+<li><a href="#permutation-test" id="toc-permutation-test">Permutation
+Test</a></li>
+</ul></li>
+<li><a href="#downstream-pathway-scoring" id="toc-downstream-pathway-scoring">5. Downstream Pathway Scoring</a>
+<ul>
+<li><a href="#random-walk-algorithm" id="toc-random-walk-algorithm">Random Walk Algorithm</a></li>
+<li><a href="#c-implementation" id="toc-c-implementation">C++
+Implementation</a></li>
+</ul></li>
+<li><a href="#computational-complexity" id="toc-computational-complexity">Computational Complexity</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+<li><a href="#session-info" id="toc-session-info">Session Info</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>SpaTalk employs a multi-step computational framework to infer
+spatially resolved cell-cell communications from spatial transcriptomics
+data. This vignette provides detailed explanations of the underlying
+algorithms. ## Algorithmic Pipeline</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                     SpaTalk Pipeline                            │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Cell-type Deconvolution (for spot-based ST)                 │
+│     └── Non-negative Linear Model (NNLM)                        │
+│                                                                 │
+│  2. Spatial Reconstruction                                      │
+│     └── Monte Carlo sampling + k-NN spatial mapping             │
+│                                                                 │
+│  3. LR-Pathway Filtering                                        │
+│     └── Knowledge graph: LR pairs → Downstream TFs              │
+│                                                                 │
+│  4. CCI Inference                                               │
+│     └── Co-expression analysis + Permutation test               │
+│                                                                 │
+│  5. Pathway Scoring                                             │
+│     └── Random walk on gene-gene interaction graph              │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+</div>
+<div id="cell-type-deconvolution" class="section level2">
+<h2>1. Cell-Type Deconvolution</h2>
+<div id="mathematical-formulation" class="section level3">
+<h3>Mathematical Formulation</h3>
+<p>For spot-based ST data where each spot contains multiple cells,
+SpaTalk decomposes the observed expression profile into
+cell-type-specific contributions using <strong>Non-negative Matrix
+Factorization (NMF)</strong>.</p>
+<p>Given: - <span class="math inline">\(X \in \mathbb{R}^{G \times
+S}\)</span>: ST expression matrix (genes × spots) - <span class="math inline">\(R \in \mathbb{R}^{G \times C}\)</span>: Reference
+expression profile (genes × cell types)</p>
+<p>The deconvolution problem is formulated as:</p>
+<p><span class="math display">\[X \approx R \cdot W\]</span></p>
+<p>where <span class="math inline">\(W \in \mathbb{R}^{C \times
+S}\)</span> represents cell-type proportions per spot, subject to: -
+<span class="math inline">\(W_{ij} \geq 0\)</span> (non-negativity) -
+<span class="math inline">\(\sum_i W_{ij} = 1\)</span> (proportions sum
+to 1)</p>
+</div>
+<div id="nnlm-algorithm" class="section level3">
+<h3>NNLM Algorithm</h3>
+<p>SpaTalk uses the NNLM (Non-Negative Linear Model) package with the
+following optimization:</p>
+<p><span class="math display">\[\min_{W \geq 0} \|X - RW\|_F^2 + \lambda
+\|W\|_1\]</span></p>
+<p>The L1 regularization term promotes sparsity in cell-type
+assignments.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Deconvolution workflow</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">dec_celltype</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">object =</span> obj,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">sc_data =</span> sc_counts,      <span class="co"># scRNA-seq reference</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">sc_celltype =</span> cell_labels, <span class="co"># Cell type annotations</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">if_doParallel =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+</div>
+<div id="spatial-reconstruction" class="section level2">
+<h2>2. Spatial Reconstruction</h2>
+<div id="monte-carlo-spatial-sampling" class="section level3">
+<h3>Monte Carlo Spatial Sampling</h3>
+<p>After deconvolution, SpaTalk reconstructs single-cell resolution
+expression by sampling cells from the reference data according to:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Cell proportion sampling</strong>: For each spot <span class="math inline">\(s\)</span> with predicted proportions <span class="math inline">\(W_s\)</span>, sample <span class="math inline">\(N_s\)</span> cells where <span class="math inline">\(N_s\)</span> is the expected number of cells per
+spot.</p></li>
+<li><p><strong>Spatial coordinate assignment</strong>: Assign
+coordinates to sampled cells using a weighted distance model:</p></li>
+</ol>
+<p><span class="math display">\[P(x_i | s) \propto
+\exp\left(-\frac{d(x_i, c_s)^2}{2\sigma^2}\right)\]</span></p>
+<p>where <span class="math inline">\(c_s\)</span> is the spot centroid
+and <span class="math inline">\(\sigma\)</span> controls the spatial
+spread.</p>
+</div>
+<div id="k-nearest-neighbor-mapping" class="section level3">
+<h3>k-Nearest Neighbor Mapping</h3>
+<p>For each reconstructed cell, find the k-nearest neighbors in the
+original ST data to refine expression estimates:</p>
+<p><span class="math display">\[\hat{E}_i = \frac{1}{|N_k(i)|} \sum_{j
+\in N_k(i)} E_j \cdot w_{ij}\]</span></p>
+<p>where <span class="math inline">\(w_{ij}\)</span> is the
+distance-based weight.</p>
+</div>
+</div>
+<div id="knowledge-graph-integration" class="section level2">
+<h2>3. Knowledge Graph Integration</h2>
+<div id="lr-pathway-database" class="section level3">
+<h3>LR-Pathway Database</h3>
+<p>SpaTalk integrates curated biological knowledge from multiple
+databases:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Database</th>
+<th>Content</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CellTalkDB</td>
+<td>Ligand-receptor pairs</td>
+<td>3,398 (Human), 2,033 (Mouse)</td>
+</tr>
+<tr class="even">
+<td>KEGG</td>
+<td>Signaling pathways</td>
+<td>~300 pathways</td>
+</tr>
+<tr class="odd">
+<td>Reactome</td>
+<td>Pathway interactions</td>
+<td>~2,000 pathways</td>
+</tr>
+<tr class="even">
+<td>AnimalTFDB</td>
+<td>Transcription factors</td>
+<td>~1,600 TFs</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="pathway-filtering-algorithm" class="section level3">
+<h3>Pathway Filtering Algorithm</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># The find_lr_path function filters LR pairs with downstream targets</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">find_lr_path</span>(obj, lrpairs, pathways)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Filter criteria:</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># 1. Both ligand and receptor expressed in ST data</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># 2. Downstream pathway genes present</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># 3. Target TFs expressed</span></span></code></pre></div>
+</div>
+</div>
+<div id="cell-cell-communication-inference" class="section level2">
+<h2>4. Cell-Cell Communication Inference</h2>
+<div id="co-expression-score" class="section level3">
+<h3>Co-expression Score</h3>
+<p>For a ligand-receptor pair (L, R) between sender cell type A and
+receiver cell type B:</p>
+<p><span class="math display">\[\text{CoExp}(L_A, R_B) = \frac{|\{(a,b)
+: E_L^a &gt; 0 \land E_R^b &gt; 0 \land d(a,b) &lt; \delta\}|}{|\{(a,b)
+: d(a,b) &lt; \delta\}|}\]</span></p>
+<p>where <span class="math inline">\(\delta\)</span> is the spatial
+distance threshold.</p>
+</div>
+<div id="permutation-test" class="section level3">
+<h3>Permutation Test</h3>
+<p>Statistical significance is assessed via permutation:</p>
+<ol style="list-style-type: decimal">
+<li>Permute cell type labels <span class="math inline">\(n\)</span>
+times (default: 1000)</li>
+<li>Recalculate co-expression for each permutation</li>
+<li>Compute p-value:</li>
+</ol>
+<p><span class="math display">\[p = \frac{|\{\pi : \text{CoExp}^\pi \geq
+\text{CoExp}^{obs}\}| + 1}{n + 1}\]</span></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># CCI inference with permutation testing</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <span class="fu">dec_cci</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">object =</span> obj,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">celltype_sender =</span> <span class="st">&quot;Macrophage&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">celltype_receiver =</span> <span class="st">&quot;Fibroblast&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">n_permutation =</span> <span class="dv">1000</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+</div>
+<div id="downstream-pathway-scoring" class="section level2">
+<h2>5. Downstream Pathway Scoring</h2>
+<div id="random-walk-algorithm" class="section level3">
+<h3>Random Walk Algorithm</h3>
+<p>To score downstream transcription factors activated by a receptor,
+SpaTalk performs random walks on the gene-gene interaction (GGI)
+graph:</p>
+<p><strong>Algorithm: Random Walk TF Scoring</strong></p>
+<pre><code>Input: GGI graph G, receptor R, TF set T, n_walks, max_hop
+Output: TF scores
+
+Initialize: score[tf] = 0 for all tf in T
+
+for i = 1 to n_walks:
+    current = R
+    for hop = 1 to max_hop:
+        neighbors = G.neighbors(current)
+        if neighbors is empty: break
+        next = random_choice(neighbors)
+        if next in T:
+            score[next] += 1
+        current = next
+
+Return: score / n_walks</code></pre>
+</div>
+<div id="c-implementation" class="section level3">
+<h3>C++ Implementation</h3>
+<p>SpaTalk uses optimized C++ code for performance-critical
+computations:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">// Simplified random walk implementation</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>NumericVector cpp_random_walk<span class="op">(</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    CharacterVector ggi_src<span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    CharacterVector ggi_dest<span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    String receptor_name<span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    CharacterVector tf_names<span class="op">,</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="dt">int</span> n_walks <span class="op">=</span> <span class="dv">10000</span><span class="op">,</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="dt">int</span> max_hop <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    <span class="co">// Build adjacency list</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    <span class="co">// Perform random walks</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="co">// Count TF visits</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    <span class="co">// Return normalized scores</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+</div>
+<div id="computational-complexity" class="section level2">
+<h2>Computational Complexity</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Time Complexity</th>
+<th>Space Complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Deconvolution</td>
+<td><span class="math inline">\(O(G \cdot S \cdot C)\)</span></td>
+<td><span class="math inline">\(O(G \cdot S)\)</span></td>
+</tr>
+<tr class="even">
+<td>Spatial reconstruction</td>
+<td><span class="math inline">\(O(S \cdot N \cdot k)\)</span></td>
+<td><span class="math inline">\(O(N)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Co-expression</td>
+<td><span class="math inline">\(O(L \cdot N^2)\)</span></td>
+<td><span class="math inline">\(O(N^2)\)</span></td>
+</tr>
+<tr class="even">
+<td>Permutation test</td>
+<td><span class="math inline">\(O(P \cdot L \cdot N^2)\)</span></td>
+<td><span class="math inline">\(O(N^2)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Random walk</td>
+<td><span class="math inline">\(O(W \cdot H)\)</span></td>
+<td><span class="math inline">\(O(|E|)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Where: G = genes, S = spots, C = cell types, N = cells, L = LR pairs,
+P = permutations, W = walks, H = max hops, E = edges.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ol style="list-style-type: decimal">
+<li><p>Shao, X., et al. (2022). Knowledge-graph-based cell-cell
+communication inference for spatially resolved transcriptomic data with
+SpaTalk. <em>Nature Communications</em>, 13, 4429.</p></li>
+<li><p>Lin, X., &amp; Boutros, P. C. (2020). Optimization and expansion
+of non-negative matrix factorization. <em>BMC Bioinformatics</em>, 21,
+7.</p></li>
+<li><p>Kanehisa, M., &amp; Goto, S. (2000). KEGG: Kyoto Encyclopedia of
+Genes and Genomes. <em>Nucleic Acids Research</em>, 28(1),
+27-30.</p></li>
+</ol>
+</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; R version 4.4.0 (2024-04-24)</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; Platform: aarch64-apple-darwin20</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; Running under: macOS 15.6.1</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; [1] C</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; time zone: Asia/Shanghai</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; tzcode source: internal</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; [1] parallel  stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; [8] base     </span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; [1] SpaTalk_2.0.0     doParallel_1.0.17 iterators_1.0.14  foreach_1.5.2    </span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; [5] ggalluvial_0.12.5 ggplot2_4.0.1     rmarkdown_2.30    knitr_1.51       </span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt;   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.4        </span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt;   [4] spatstat.utils_3.2-1   farver_2.1.2           fs_1.6.6              </span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt;   [7] vctrs_0.7.0            ROCR_1.0-11            spatstat.explore_3.6-0</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt;  [10] rstatix_0.7.3          htmltools_0.5.9        progress_1.2.3        </span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="co">#&gt;  [13] broom_1.0.11           Formula_1.2-5          sass_0.4.10           </span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="co">#&gt;  [16] sctransform_0.4.3      parallelly_1.46.1      KernSmooth_2.23-26    </span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="co">#&gt;  [19] bslib_0.9.0            htmlwidgets_1.6.4      ica_1.0-3             </span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="co">#&gt;  [22] plyr_1.8.9             plotly_4.11.0          zoo_1.8-15            </span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a><span class="co">#&gt;  [25] cachem_1.1.0           igraph_2.2.1           mime_0.13             </span></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="co">#&gt;  [28] lifecycle_1.0.5        pkgconfig_2.0.3        Matrix_1.7-4          </span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a><span class="co">#&gt;  [31] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-4    </span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a><span class="co">#&gt;  [34] future_1.69.0          shiny_1.12.1           digest_0.6.39         </span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a><span class="co">#&gt;  [37] patchwork_1.3.2        Seurat_4.4.0           tensor_1.5.1          </span></span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="co">#&gt;  [40] irlba_2.3.5.1          ggpubr_0.6.2           progressr_0.18.0      </span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a><span class="co">#&gt;  [43] spatstat.sparse_3.1-0  httr_1.4.7             polyclip_1.10-7       </span></span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a><span class="co">#&gt;  [46] abind_1.4-8            compiler_4.4.0         withr_3.0.2           </span></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a><span class="co">#&gt;  [49] backports_1.5.0        S7_0.2.1               carData_3.0-5         </span></span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a><span class="co">#&gt;  [52] ggforce_0.5.0          ggsignif_0.6.4         MASS_7.3-65           </span></span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a><span class="co">#&gt;  [55] rappdirs_0.3.4         tools_4.4.0            lmtest_0.9-40         </span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a><span class="co">#&gt;  [58] otel_0.2.0             scatterpie_0.2.6       httpuv_1.6.16         </span></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a><span class="co">#&gt;  [61] future.apply_1.20.1    goftest_1.2-3          glue_1.8.0            </span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a><span class="co">#&gt;  [64] nlme_3.1-168           promises_1.5.0         grid_4.4.0            </span></span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a><span class="co">#&gt;  [67] Rtsne_0.17             cluster_2.1.8.1        reshape2_1.4.5        </span></span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a><span class="co">#&gt;  [70] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-9   </span></span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a><span class="co">#&gt;  [73] tzdb_0.5.0             tidyr_1.3.2            data.table_1.18.0     </span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a><span class="co">#&gt;  [76] hms_1.1.4              car_3.1-3              sp_2.2-0              </span></span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a><span class="co">#&gt;  [79] spatstat.geom_3.6-1    RcppAnnoy_0.0.23       ggrepel_0.9.6         </span></span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a><span class="co">#&gt;  [82] RANN_2.6.2             pillar_1.11.1          stringr_1.6.0         </span></span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a><span class="co">#&gt;  [85] yulab.utils_0.2.3      ggExtra_0.11.0         later_1.4.5           </span></span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a><span class="co">#&gt;  [88] splines_4.4.0          dplyr_1.1.4            tweenr_2.0.3          </span></span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a><span class="co">#&gt;  [91] lattice_0.22-7         survival_3.8-3         deldir_2.0-4          </span></span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a><span class="co">#&gt;  [94] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         </span></span>
+<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a><span class="co">#&gt;  [97] gridExtra_2.3          scattermore_1.2        xfun_0.56             </span></span>
+<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a><span class="co">#&gt; [100] matrixStats_1.5.0      pheatmap_1.0.13        stringi_1.8.7         </span></span>
+<span id="cb7-59"><a href="#cb7-59" tabindex="-1"></a><span class="co">#&gt; [103] lazyeval_0.2.2         ggfun_0.2.0            yaml_2.3.12           </span></span>
+<span id="cb7-60"><a href="#cb7-60" tabindex="-1"></a><span class="co">#&gt; [106] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          </span></span>
+<span id="cb7-61"><a href="#cb7-61" tabindex="-1"></a><span class="co">#&gt; [109] cli_3.6.5              uwot_0.2.4             xtable_1.8-4          </span></span>
+<span id="cb7-62"><a href="#cb7-62" tabindex="-1"></a><span class="co">#&gt; [112] reticulate_1.44.1      jquerylib_0.1.4        dichromat_2.0-0.1     </span></span>
+<span id="cb7-63"><a href="#cb7-63" tabindex="-1"></a><span class="co">#&gt; [115] Rcpp_1.1.1             globals_0.18.0         spatstat.random_3.4-3 </span></span>
+<span id="cb7-64"><a href="#cb7-64" tabindex="-1"></a><span class="co">#&gt; [118] png_0.1-8              spatstat.univar_3.1-6  readr_2.1.6           </span></span>
+<span id="cb7-65"><a href="#cb7-65" tabindex="-1"></a><span class="co">#&gt; [121] NNLM_0.4.4             prettyunits_1.2.0      listenv_0.10.0        </span></span>
+<span id="cb7-66"><a href="#cb7-66" tabindex="-1"></a><span class="co">#&gt; [124] viridisLite_0.4.2      scales_1.4.0           ggridges_0.5.7        </span></span>
+<span id="cb7-67"><a href="#cb7-67" tabindex="-1"></a><span class="co">#&gt; [127] SeuratObject_4.1.4     leiden_0.4.3.1         purrr_1.2.1           </span></span>
+<span id="cb7-68"><a href="#cb7-68" tabindex="-1"></a><span class="co">#&gt; [130] crayon_1.5.3           rlang_1.1.7            cowplot_1.2.0</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

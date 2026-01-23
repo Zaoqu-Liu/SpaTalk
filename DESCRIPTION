@@ -58,3 +58,4 @@ Suggests:
     reticulate,
     anndata,
     sceasy
+VignetteBuilder: knitr
