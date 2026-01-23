@@ -1,0 +1,9 @@
+^spatalk\.Rproj$
+^SpaTalk\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^script$
+^img$
+^.*\.o$
+^.*\.so$
+^.*\.dll$

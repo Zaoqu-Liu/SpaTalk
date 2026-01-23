@@ -1,0 +1,60 @@
+Package: SpaTalk
+Title: Spatially Resolved Cell-Cell Communication Inference for Spatial Transcriptomics
+Version: 2.0.0
+Depends: R (>= 4.0.0), ggalluvial, doParallel
+Authors@R: c(
+    person("Zaoqu", "Liu", , "liuzaoqu@163.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0452-742X")),
+    person("Xin", "Shao", , "xin_shao@zju.edu.cn", role = c("aut"),
+           comment = c(ORCID = "0000-0002-1928-3878")))
+Description: Infers spatially resolved cell-cell communications from spatial transcriptomics 
+    data using graph network and knowledge graph approaches. Supports both single-cell 
+    resolution and spot-based spatial transcriptomics platforms. Provides cell type 
+    deconvolution, ligand-receptor interaction analysis, and downstream pathway inference.
+URL: https://github.com/Zaoqu-Liu/SpaTalk
+BugReports: https://github.com/Zaoqu-Liu/SpaTalk/issues
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    Seurat (>= 3.0.0),
+    methods,
+    reshape2,
+    Matrix,
+    NNLM,
+    stringr,
+    progress,
+    stats,
+    utils,
+    ggplot2,
+    ggExtra,
+    crayon,
+    ggpubr,
+    grDevices,
+    scales,
+    scatterpie,
+    pheatmap,
+    corrplot,
+    circlize,
+    ggraph,
+    ggrepel,
+    igraph,
+    foreach,
+    parallel,
+    iterators,
+    readr,
+    digest,
+    Rcpp (>= 1.0.0)
+LinkingTo: Rcpp, RcppArmadillo
+Suggests: 
+    rmarkdown,
+    knitr,
+    prettydoc,
+    spacexr,
+    SPOTlight,
+    deconvSeq,
+    reticulate,
+    anndata,
+    sceasy

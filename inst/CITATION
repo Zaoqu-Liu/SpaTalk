@@ -1,0 +1,32 @@
+citHeader("Please cite Shao X (2022) for using SpaTalk")
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Knowledge-graph-based cell-cell communication inference for spatially resolved transcriptomic data with SpaTalk",
+  author   = c(
+    person("Xin", "Shao"),
+    person("Chengyu", "Li"),
+    person("Haihong", "Yang"),
+    person("Xiaoyan", "Lu"),
+    person("Jie", "Liao"),
+    person("Jingyang", "Qian"),
+    person("Kai", "Wang"),
+    person("Junyun", "Cheng"),
+    person("Penghui", "Yang"),
+    person("Huajun", "Chen"),
+    person("Xiao", "Xu"),
+    person("Xiaohui", "Fan")
+  ),
+  journal  = "Nature Communications",
+  year     = "2022",
+  volume   = "13",
+  pages    = "4429",
+  doi      = "10.1038/s41467-022-32111-8",
+  url      = "https://www.nature.com/articles/s41467-022-32111-8",
+  textVersion = paste(
+    "Shao, X., Li, C., Yang, H. et al.",
+    "Knowledge-graph-based cell-cell communication inference for spatially resolved transcriptomic data with SpaTalk.",
+    "Nat Commun 13, 4429 (2022).",
+    "https://doi.org/10.1038/s41467-022-32111-8"
+  )
+)
